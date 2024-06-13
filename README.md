@@ -12,4 +12,4 @@ Features
     Streamlit: Provides the backend interface.
     Docker: Containerizes the application for easy deployment.
 
-![Project Logo]("app/media/osintube.webp")
+![Project Logo](app/media/osintube.webp)
