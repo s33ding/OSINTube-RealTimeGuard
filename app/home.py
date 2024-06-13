@@ -8,6 +8,10 @@ from shared_func.s3_objects import *
 st.title("OSINTube")
 
 
+# Display the image
+image_path = config.img_path
+st.image(image_path, caption="OSINTube-RealTimeGuard: Real-time Threat Detection for YouTube Content", use_column_width=True)
+
 st.write(config.readme)
 
 # Create a text input widget

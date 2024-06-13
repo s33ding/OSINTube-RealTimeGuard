@@ -33,6 +33,8 @@ def extract_data(search_str):
                 df = pd.concat([tmp, df])
 
     df["normalized"] = df["translated"].apply(lambda x: normalize(x) if x is not None else None)
-    #df['sentiment_score'] = df['normalized'].apply(analyze_sentiment)
+    df['sentiment_score'] = df['normalized'].apply(sentiment_analysis)
+    df = df [["sentiment_score","comment","title","person","link","translated","normalized"]]
+    df = df.sort_values("sentiment_score")
     return df
 

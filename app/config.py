@@ -1,7 +1,7 @@
 import os
 
-comments_maxResult = 80
 comments_maxResult = 20
+comments_maxResult = 15
 gcp_api_key =  os.environ["GCP_CRED"]
 openai_api_key =  os.environ["OPENAI_CRED"]
 aws_key =  os.environ["AWS_ACCESS_KEY_ID"]
@@ -12,6 +12,7 @@ bucket_name = "s33ding-osintube"
 default_file_name = "data.pickle"
 output_path = f"output/{default_file_name}"
 delete_file = False
+img_path = "media/osintube.webp"
 
 readme = f"""OSINTube-RealTimeGuard is a real-time threat detection system for YouTube content. It leverages AWS YouTube Search and PyTube for efficient video retrieval and transcription. With continuous monitoring and analysis, this system ensures online safety by identifying potential threats and suspicious activities in YouTube videos."""
 

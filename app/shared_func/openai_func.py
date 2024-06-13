@@ -1,20 +1,20 @@
 import config
 from openai import OpenAI
+import re
 
 # Initialize OpenAI client with your API key
 client = OpenAI(api_key = config.openai_api_key)
 
-# Initialize OpenAI API with your API key
 
-def sentiment_analysis(comment):
-    transcription = " ".join(map(str,comment))
+def sentiment_analysis(transcription):
+    transcription = ", ".join(transcription)
     response = client.chat.completions.create(
         model="gpt-4",
         temperature=0,
         messages=[
             {
                 "role": "system",
-                "content": "As an AI with expertise in language and emotion analysis, your task is to analyze the sentiment of the following text. Please consider the overall tone of the discussion, the emotion conveyed by the language used, and the context in which words and phrases are used. "
+                "content": f"As an AI with expertise in sentiment analysis, your task is to analyze the sentiment of the following text. Please evaluate the overall sentiment conveyed by the language used and provide a numerical sentiment score between 0 and 1, where 0 represents a very negative sentiment and 1 represents a very positive sentiment. The text to analyze is: '{transcription}'"
             },
             {
                 "role": "user",
@@ -22,23 +22,15 @@ def sentiment_analysis(comment):
             }
         ]
     )
-    return completion.choices[0].message.content
 
-def analyze_sentiment(comment):
-    if comment is not None:
-        response = client.completions.create(
-            model="text-davinci-003",  # Choose the model according to your preference
-            prompt=f"Classify sentiment as a numeric score from 0 to 1:\n{comment}\n",
-            max_tokens=1,
-            stop=["\n"]
-        )
-        try:
-            sentiment_score = float(response.choices[0].text.strip())
-            if 0 <= sentiment_score <= 1:
-                return sentiment_score
-            else:
-                return None  # Invalid sentiment score
-        except ValueError:
-            return None  # Unable to extract a valid numeric sentiment score
+    # Extract the content from the response
+    completion = response.choices[0].message.content.strip()
+
+    # Use regex to find the first float in the response
+    match = re.search(r"[-+]?\d*\.\d+|\d+", completion)
+    if match:
+        sentiment_score = float(match.group())
     else:
-        return None  # No comment provided
+        raise ValueError("No numeric sentiment score found in the response")
+
+    return sentiment_score
