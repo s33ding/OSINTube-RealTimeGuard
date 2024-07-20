@@ -14,5 +14,4 @@ Features
 
 ![Project Logo](app/media/osintube.webp)
 
-See the app demonstration in this video: 
-[Watch the video on YouTube](https://www.youtube.com/watch?v=7DeVyUtODWM)
+Check out the app demonstration in this [YouTube video](https://www.youtube.com/watch?v=7DeVyUtODWM).
