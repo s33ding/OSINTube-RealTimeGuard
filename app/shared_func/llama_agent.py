@@ -24,14 +24,22 @@ def analyze_dataset_with_llama(df, s3_key, bucket_name, input_data):
         print(f"DEBUG: Zero count: {zero_count}, Total: {total_count}, Ratio: {zero_ratio}")
         
         if zero_ratio < 0.5:  # Less than 50% zeros, use sentiment filtering
-            critical_comments = df[df['sentiment_score'] <= 0.1].copy()
+            critical_comments = df[df['sentiment_score'] <= 0.5].copy()  # Much more aggressive - catch even mildly positive
             filter_method = "sentiment-based"
         else:  # Too many zeros, use normalized text filtering
-            threat_keywords = ['mort', 'mat', 'viol', 'odi', 'ameac', 'guerr', 'destrui', 'elimin', 'atac', 'arm', 'bomb', 'pres', 'conden', 'julg', 'inocent', 'culp']
+            threat_keywords = ['mort', 'mat', 'viol', 'odi', 'ameac', 'guerr', 'destrui', 'elimin', 'atac', 'arm', 'bomb', 'pres', 'conden', 'julg', 'inocent', 'culp', 'fogo', 'eterno', 'psicopat', 'fracass', 'corrupt', 'traficant', 'assassin', 'militant', 'esquerdist', 'judici', 'credibil', 'solto']
             critical_comments = df[
                 df['normalized'].str.contains('|'.join(threat_keywords), case=False, na=False)
             ].copy()
             filter_method = "keyword-based"
+        
+        # If still not enough, add comments with exclamation marks and caps (aggressive tone)
+        if len(critical_comments) < 50:
+            aggressive_comments = df[
+                df['comment'].str.contains(r'[!]{2,}|[A-Z]{5,}', case=False, na=False, regex=True)
+            ]
+            critical_comments = pd.concat([critical_comments, aggressive_comments]).drop_duplicates()
+            filter_method += "+aggressive-tone"
         
         print(f"DEBUG: Filter method: {filter_method}, Critical comments found: {len(critical_comments)}")
         
@@ -68,9 +76,15 @@ Find threats and highlight specific rows with user information.
 
 **SUMMARY:**
 - Threat Level: [Low/Medium/High]
-- Reason for threat level: [Explanation]
-- Specific threats: [List specific threats found]
-- Users who made threats: [List users who made threats]"""
+- Total Threats Found: [Number]
+- Unique Threatening Users: [Number]
+- Most Common Threat Type: [Type]
+
+**GRAPH ANALYSIS:**
+- Sentiment Distribution: [Average, min, max sentiment scores of threats]
+- Threat Concentration: [% of threats from top users]
+- Language Patterns: [% with CAPS, % with exclamations, keyword frequency]
+- Risk Assessment: [Statistical trend analysis]"""
 
         print(f"DEBUG: Prompt length: {len(prompt)} characters")
         

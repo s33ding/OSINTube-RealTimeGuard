@@ -3,6 +3,7 @@ import pandas as pd
 import pickle
 import pyfiglet
 from shared_func.readonly_client import get_clients
+from shared_func.sentiment_viz import create_sentiment_combined, create_sentiment_counts
 from shared_func.llama_agent import analyze_dataset_with_llama
 
 st.set_page_config(page_title="Public Data", page_icon="🛡️", layout="wide")
@@ -123,20 +124,6 @@ try:
         total_count = len(df_data)
         zero_ratio = zero_count / total_count if total_count > 0 else 0
         
-        st.markdown("### 🔍 Filter Analysis")
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.metric("Zero Scores", f"{zero_count}/{total_count}", f"{zero_ratio:.1%}")
-        with col2:
-            if zero_ratio < 0.5:
-                critical_count = (df_data['sentiment_score'] <= 0.1).sum()
-            else:
-                threat_keywords = ['mort', 'mat', 'viol', 'odi', 'ameac', 'guerr', 'destrui', 'elimin', 'atac', 'arm', 'bomb', 'pres', 'conden', 'julg', 'inocent', 'culp']
-                critical_count = df_data['normalized'].str.contains('|'.join(threat_keywords), case=False, na=False).sum()
-            st.metric("Critical Comments", critical_count, f"{critical_count/total_count:.1%}")
-        with col3:
-            st.metric("Analysis Scope", f"{min(critical_count, 20)}/20", "Limited for cost")
-        
         # Basic metrics
         col1, col2, col3, col4, col5 = st.columns(5)
         with col1:
@@ -166,6 +153,20 @@ try:
                         "person": st.column_config.TextColumn("👤 User", width="medium"),
                         "title": st.column_config.TextColumn("🎥 Title", width="medium")
                     })
+        
+        # Sentiment Analysis Charts
+        st.markdown("### 📊 Sentiment Analysis")
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            sentiment_fig = create_sentiment_combined(df_data)
+            if sentiment_fig:
+                st.plotly_chart(sentiment_fig, use_container_width=True)
+        
+        with col2:
+            counts_fig = create_sentiment_counts(df_data)
+            if counts_fig:
+                st.plotly_chart(counts_fig, use_container_width=True)
     
     # Threat Analysis Agent (always visible after dataset selection)
     st.markdown("### 🤖 Threat Analysis Agent")
@@ -195,15 +196,6 @@ try:
                                 if line.strip().startswith('- ROW'):
                                     st.error(line.strip())
                             
-                            # Display summary
-                            if summary_section:
-                                st.markdown("### 📊 SUMMARY")
-                                for line in summary_section.strip().split('\n'):
-                                    if line.strip().startswith('- '):
-                                        if 'Threat Level:' in line:
-                                            st.warning(line.strip())
-                                        else:
-                                            st.info(line.strip())
                     else:
                         # Fallback: display as text area
                         st.text_area("🚨 Threat Analysis Results:", analysis, height=400)

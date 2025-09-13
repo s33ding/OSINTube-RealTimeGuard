@@ -16,3 +16,4 @@ pyfiglet
 beautifulsoup4
 lxml
 pytz
+plotly
