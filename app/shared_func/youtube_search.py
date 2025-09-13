@@ -1,90 +1,97 @@
-from youtubesearchpython import VideosSearch
-from youtubesearchpython import VideoSortOrder
-from youtubesearchpython import CustomSearch
-from urllib.parse import urlparse, parse_qs
+from shared_func.googleapiclient_func import connect_to_youtube
 import config
 
 def search_youtube(query, max_results=config.search_limit, order_by_date=True):
     """
-    Search YouTube for videos based on the given query and optional filters.
-
-    Args:
-        query (str): The search query.
-        max_results (int): Maximum number of search results to return. Default is 10.
-
-    Returns:
-        list: A list of dictionaries containing information about the search results.
+    Search YouTube for videos using YouTube Data API v3.
     """
-
-    if order_by_date:
-        if max_results is None:
-            videos_search = VideosSearch(query, limit=max_results) 
-        else:
-            videos_search = CustomSearch(query, VideoSortOrder.uploadDate, limit=max_results) 
-    else:
-        if max_results is None:
-            videos_search = CustomSearch(query, VideoSortOrder.uploadDate) 
-        else:
-            videos_search = VideosSearch(query, limit=max_results) 
-
-    results = videos_search.result()['result']
+    youtube = connect_to_youtube()
+    
+    order = 'date' if order_by_date else 'relevance'
+    
+    request = youtube.search().list(
+        part="snippet",
+        q=query,
+        type="video",
+        order=order,
+        maxResults=max_results
+    )
+    
+    response = request.execute()
+    
+    # Convert to format expected by the app
+    results = []
+    for item in response['items']:
+        result = {
+            'id': item['id']['videoId'],
+            'title': item['snippet']['title'],
+            'link': f"https://www.youtube.com/watch?v={item['id']['videoId']}",
+            'channel': {
+                'name': item['snippet']['channelTitle'],
+                'id': item['snippet']['channelId']
+            },
+            'publishedTime': item['snippet']['publishedAt'],
+            'thumbnails': item['snippet']['thumbnails']
+        }
+        results.append(result)
+    
     return results
-
-
-def get_channel_id_from_url(channel_url):
-    """
-    Extracts the channel ID from a YouTube channel URL.
-
-    Args:
-        channel_url (str): The URL of the YouTube channel.
-
-    Returns:
-        str: The channel ID extracted from the URL.
-    """
-    parsed_url = urlparse(channel_url)
-    if parsed_url.netloc == 'www.youtube.com':
-        if parsed_url.path == '/channel':
-            query_params = parse_qs(parsed_url.query)
-            channel_id = query_params.get('channel_id', [''])[0]
-            return channel_id
-        elif parsed_url.path.startswith('/user/'):
-            return parsed_url.path.split('/')[-1]
-        elif parsed_url.path.startswith('/c/'):
-            return parsed_url.path.split('/')[-1]
-        else:
-            # Extract channel ID from URL in the format '/@username'
-            return parsed_url.path.split('/')[-1].replace('@', '')
-    return None
-
 
 def search_by_channel(channel_url, max_results=config.search_limit, order_by_date=True):
     """
-    Search YouTube for videos within a specific channel.
-
-    Args:
-        channel_url (str): The URL of the YouTube channel to search within.
-        max_results (int): Maximum number of search results to return. Default is 10.
-        order_by_date (bool): Whether to order search results by date. Default is True.
-
-    Returns:
-        list: A list of dictionaries containing information about the search results.
+    Search YouTube for videos within a specific channel using YouTube Data API v3.
     """
-
+    youtube = connect_to_youtube()
+    
+    # Extract channel ID from URL
     channel_id = get_channel_id_from_url(channel_url)
-
     if not channel_id:
-        raise ValueError("Invalid channel URL. Please provide a valid YouTube channel URL.")
-
-    if order_by_date:
-        if max_results is None:
-            videos_search = CustomSearch('', limit=max_results, channel=channel_id)
-        else:
-            videos_search = CustomSearch('', VideoSortOrder.uploadDate, limit=max_results, channel=channel_id)
-    else:
-        if max_results is None:
-            videos_search = CustomSearch('', VideoSortOrder.uploadDate, channel=channel_id)
-        else:
-            videos_search = CustomSearch('', limit=max_results, channel=channel_id)
-
-    results = videos_search.result()['result']
+        raise ValueError("Invalid channel URL")
+    
+    order = 'date' if order_by_date else 'relevance'
+    
+    request = youtube.search().list(
+        part="snippet",
+        channelId=channel_id,
+        type="video",
+        order=order,
+        maxResults=max_results
+    )
+    
+    response = request.execute()
+    
+    # Convert to format expected by the app
+    results = []
+    for item in response['items']:
+        result = {
+            'id': item['id']['videoId'],
+            'title': item['snippet']['title'],
+            'link': f"https://www.youtube.com/watch?v={item['id']['videoId']}",
+            'channel': {
+                'name': item['snippet']['channelTitle'],
+                'id': item['snippet']['channelId']
+            },
+            'publishedTime': item['snippet']['publishedAt'],
+            'thumbnails': item['snippet']['thumbnails']
+        }
+        results.append(result)
+    
     return results
+
+def get_channel_id_from_url(channel_url):
+    """Extract channel ID from YouTube channel URL."""
+    from urllib.parse import urlparse
+    
+    parsed_url = urlparse(channel_url)
+    if 'youtube.com' in parsed_url.netloc:
+        path = parsed_url.path
+        if '/channel/' in path:
+            return path.split('/channel/')[-1]
+        elif '/c/' in path:
+            return path.split('/c/')[-1]
+        elif '/user/' in path:
+            return path.split('/user/')[-1]
+        elif '/@' in path:
+            return path.split('/@')[-1]
+    
+    return None

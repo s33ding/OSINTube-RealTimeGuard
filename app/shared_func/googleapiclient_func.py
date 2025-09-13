@@ -2,29 +2,28 @@ import os
 import re
 import config
 from googleapiclient.discovery import build
-from google.oauth2 import service_account
 
 def connect_to_youtube():
-    # Build the YouTube API service using the credentials
-    youtube = build('youtube', 'v3', developerKey=config.gcp_api_key)
+    # Build the YouTube API service using the API key
+    youtube = build('youtube', 'v3', developerKey=config.youtube_api_key)
     return youtube
 
-def scrap_youtube_comments(video_url, youtube):
+def scrap_youtube_comments(video_url, youtube, max_comments=10):
     # Retrieve comments for a specific video
     video_id = video_url.split("v=")[-1]
     try:
         response = youtube.commentThreads().list(
             part='snippet',
             videoId=video_id,
-            maxResults=config.comments_maxResult  # Adjust as needed
+            maxResults=max_comments
         ).execute()
         return response
     except:
         return None
 
-def get_youtube_comments(video_url='https://www.youtube.com/watch?v=8OOciVqvalU'):
+def get_youtube_comments(video_url='https://www.youtube.com/watch?v=8OOciVqvalU', max_comments=10):
     youtube = connect_to_youtube()
-    result = scrap_youtube_comments(video_url, youtube)
+    result = scrap_youtube_comments(video_url, youtube, max_comments)
     if result is None:
         return None
     else:
@@ -42,38 +41,32 @@ def analyse(response, youtube):
             id=commenter_id
         ).execute()
 
-        # Extract commenter username
+        # Extract commenter info
         commenter_username = commenter_response['items'][0]['snippet']['title']
+        channel_url = f"https://www.youtube.com/channel/{commenter_id}"
+        
+        # Create separate user info (username only)
+        user_info = commenter_username
 
-        if commenter_username in comments_dict:
-            comments_dict[commenter_username].append(comment)
+        if user_info in comments_dict:
+            comments_dict[user_info].append({
+                'comment': comment,
+                'user_channel': channel_url
+            })
         else:
-            comments_dict[commenter_username] = [comment]
+            comments_dict[user_info] = [{
+                'comment': comment,
+                'user_channel': channel_url
+            }]
 
     return comments_dict
 
 def translate_to_english(text):
     """
-    Translate text from Portuguese to English using Google Translate API.
-
-    Args:
-    - text (str): The text to be translated from Portuguese to English.
-
-    Returns:
-    - translated_text (str): The translated text in English.
+    Translate text to English using AWS Translate.
     """
-    # Initialize the Translate API client
-    service = build('translate', 'v2', developerKey=config.gcp_api_key)
-
-    # Perform translation
-    translation = service.translations().list(
-        source='pt',
-        target='en',
-        q=[text]
-    ).execute()
-
-    translated_text = translation['translations'][0]['translatedText']
-    return translated_text
+    from shared_func.translate_func import translate_text
+    return translate_text(text, 'en')
 
 
 def extract_video_id(youtube_url):

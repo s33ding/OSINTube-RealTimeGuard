@@ -2,6 +2,56 @@ import re
 from collections import Counter
 import nltk
 from itertools import islice
+import unicodedata
+
+def clean_html_tags(text):
+    """Remove HTML tags and clean up text"""
+    if not text:
+        return ""
+    
+    # Remove HTML tags
+    text = re.sub(r'<[^>]+>', '', text)
+    
+    # Decode HTML entities
+    text = text.replace('&amp;', '&')
+    text = text.replace('&lt;', '<')
+    text = text.replace('&gt;', '>')
+    text = text.replace('&quot;', '"')
+    text = text.replace('&#39;', "'")
+    
+    # Remove duplicate hashtags/content
+    words = text.split()
+    seen = set()
+    cleaned_words = []
+    for word in words:
+        if word.lower() not in seen:
+            seen.add(word.lower())
+            cleaned_words.append(word)
+    
+    return ' '.join(cleaned_words)
+
+def normalize_key_name(key_name):
+    # Remove accents and special characters
+    normalized = unicodedata.normalize('NFD', key_name)
+    normalized = ''.join(c for c in normalized if unicodedata.category(c) != 'Mn')
+    
+    # Replace spaces and special characters with underscores
+    normalized = re.sub(r'[^\w\s-]', '', normalized)
+    normalized = re.sub(r'[-\s]+', '_', normalized)
+    
+    return normalized
+
+def normalize(text):
+    if not text:
+        return ""
+    
+    # Clean HTML tags first
+    text = clean_html_tags(text)
+    
+    # Remove extra whitespace
+    text = re.sub(r'\s+', ' ', text).strip()
+    
+    return text
 
 def clean_text(text, language="english"):
     txt = re.sub(r"/W"," ",text)
