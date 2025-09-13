@@ -1,0 +1,10 @@
+pandas
+boto3
+youtube-search-python
+google-api-python-client
+nltk
+transformers
+matplotlib
+streamlit
+openai
+altair

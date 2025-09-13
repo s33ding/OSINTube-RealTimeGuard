@@ -1,0 +1,4 @@
+eks_cluster_name = "your-eks-cluster-name-in-sa-east-1"
+s3_bucket_name = "s33ding-osintube"
+gcp_credentials = "your-gcp-credentials-json-here"
+openai_api_key = "your-openai-api-key-here"

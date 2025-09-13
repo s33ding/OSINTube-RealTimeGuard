@@ -1,5 +1,8 @@
 # Set page config first
 import streamlit as st
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from shared_func.cognito_func import is_authenticated
 
 # Check authentication before setting sidebar
