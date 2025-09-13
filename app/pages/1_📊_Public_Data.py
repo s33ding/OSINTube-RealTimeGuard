@@ -207,23 +207,41 @@ try:
                     
                     st.markdown("---")
                     
-                    # Create display dataframe with clickable links
+                    # Word Cloud Button
+                    if st.button("☁️ Generate Word Cloud", key=f"wordcloud_{selected_dataset}"):
+                        try:
+                            from wordcloud import WordCloud
+                            import matplotlib.pyplot as plt
+                            
+                            # Combine all comments for word cloud
+                            all_text = " ".join(df_data['comment'].astype(str))
+                            
+                            # Generate word cloud
+                            wordcloud = WordCloud(
+                                width=800, 
+                                height=400, 
+                                background_color='white',
+                                colormap='viridis',
+                                max_words=100
+                            ).generate(all_text)
+                            
+                            # Display word cloud
+                            fig, ax = plt.subplots(figsize=(10, 5))
+                            ax.imshow(wordcloud, interpolation='bilinear')
+                            ax.axis('off')
+                            st.pyplot(fig)
+                            
+                        except ImportError:
+                            st.warning("📦 WordCloud library not installed. Install with: pip install wordcloud")
+                        except Exception as e:
+                            st.error(f"❌ Error generating word cloud: {e}")
+                    
+                    # Rename columns for better display
                     display_df = df_data.copy()
-                    
-                    # Convert URLs to markdown links for better clickability
                     if 'user_channel' in display_df.columns:
-                        display_df['user_channel'] = display_df.apply(
-                            lambda row: f"[🔗 {row.get('person', 'User')}]({row.get('user_channel', '#')})" 
-                            if pd.notna(row.get('user_channel')) else row.get('person', 'User'), 
-                            axis=1
-                        )
-                    
+                        display_df = display_df.rename(columns={'user_channel': 'user_channel_link'})
                     if 'link' in display_df.columns:
-                        display_df['link'] = display_df.apply(
-                            lambda row: f"[▶️ Watch]({row.get('link', '#')})" 
-                            if pd.notna(row.get('link')) else 'No link', 
-                            axis=1
-                        )
+                        display_df = display_df.rename(columns={'link': 'video_link'})
                     
                     # Enhanced dataframe display
                     st.dataframe(
@@ -247,8 +265,8 @@ try:
                                 width="medium",
                                 help="YouTube username"
                             ),
-                            "user_channel": st.column_config.TextColumn(
-                                "🔗 Channel", 
+                            "user_channel_link": st.column_config.LinkColumn(
+                                "👤 User Channel", 
                                 width="medium",
                                 help="Click to visit user's YouTube channel"
                             ),
@@ -262,10 +280,15 @@ try:
                                 width="large",
                                 help="Translated comment text"
                             ),
-                            "link": st.column_config.TextColumn(
+                            "video_link": st.column_config.LinkColumn(
                                 "▶️ Watch", 
                                 width="small",
                                 help="Click to watch the video"
+                            ),
+                            "tokens": st.column_config.TextColumn(
+                                "🔤 Tokens",
+                                width="medium", 
+                                help="Extracted tokens from comment"
                             ),
                             "normalized": None  # Hide this column
                         },

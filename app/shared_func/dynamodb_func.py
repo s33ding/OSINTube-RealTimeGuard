@@ -63,10 +63,9 @@ def log_search_to_dynamodb(video_query, s3_key, max_comments=10, max_videos=1, v
         response = dynamodb.put_item(
             TableName='osintube',
             Item={
-                'pk': {'S': pk},
+                'video': {'S': pk},  # Changed from 'pk' to 'video' to match table schema
                 'video_query': {'S': video_query},
                 'video_title': {'S': video_title or 'Unknown'},
-                'links': {'SS': links},
                 's3': {'S': s3_key},
                 's3_full_path': {'S': s3_full_path},
                 'timestamp': {'S': timestamp},
@@ -76,8 +75,7 @@ def log_search_to_dynamodb(video_query, s3_key, max_comments=10, max_videos=1, v
                 'max_videos': {'N': str(max_videos)},
                 'comments_found': {'N': str(comments_found)},
                 'bucket_name': {'S': bucket_name},
-                'status': {'S': 'completed'},
-                'data_size_bytes': {'N': '0'}  # Will be updated after S3 upload
+                'status': {'S': 'completed'}
             }
         )
         return True

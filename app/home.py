@@ -198,18 +198,27 @@ if run_button and input_data and not st.session_state.stop_requested:
             # Display results
             st.success(f"✅ Found {len(df)} comments")
             
+            # Rename columns for consistency
+            display_df = df.copy()
+            if 'user_channel' in display_df.columns:
+                display_df = display_df.rename(columns={'user_channel': 'user_channel_link'})
+            if 'link' in display_df.columns:
+                display_df = display_df.rename(columns={'link': 'video_link'})
+            
             # Better DataFrame display with column config
             st.dataframe(
-                df, 
+                display_df, 
                 use_container_width=True,
                 height=400,
                 column_config={
-                    "sentiment_score": st.column_config.NumberColumn("Sentiment", format="%.2f", width="small"),
-                    "comment": st.column_config.TextColumn("Comment", width="large"),
-                    "person": st.column_config.TextColumn("User", width="medium"),
-                    "title": st.column_config.TextColumn("Video", width="medium"),
-                    "translated": st.column_config.TextColumn("Translation", width="large"),
-                    "link": st.column_config.LinkColumn("Link", width="small"),
+                    "sentiment_score": st.column_config.NumberColumn("😊 Sentiment", format="%.2f", width="small"),
+                    "comment": st.column_config.TextColumn("💬 Comment", width="large"),
+                    "person": st.column_config.TextColumn("👤 User", width="medium"),
+                    "user_channel_link": st.column_config.LinkColumn("👤 User Channel", width="medium"),
+                    "title": st.column_config.TextColumn("🎥 Video", width="medium"),
+                    "translated": st.column_config.TextColumn("🌐 Translation", width="large"),
+                    "video_link": st.column_config.LinkColumn("▶️ Watch", width="small"),
+                    "tokens": st.column_config.TextColumn("🔤 Tokens", width="medium"),
                     "normalized": None  # Hide this column
                 },
                 hide_index=True
