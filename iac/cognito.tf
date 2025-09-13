@@ -78,6 +78,89 @@ resource "aws_cognito_user_pool_domain" "osintube_domain" {
   user_pool_id = aws_cognito_user_pool.osintube_pool.id
 }
 
+# Cognito Identity Pool
+resource "aws_cognito_identity_pool" "osintube_identity_pool" {
+  identity_pool_name               = "osintube_identity_pool"
+  allow_unauthenticated_identities = false
+
+  cognito_identity_providers {
+    client_id               = aws_cognito_user_pool_client.osintube_client.id
+    provider_name           = aws_cognito_user_pool.osintube_pool.endpoint
+    server_side_token_check = false
+  }
+}
+
+# IAM role for authenticated users with full access
+resource "aws_iam_role" "cognito_authenticated" {
+  name = "Cognito_osintube_authenticated_role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Federated = "cognito-identity.amazonaws.com"
+        }
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Condition = {
+          StringEquals = {
+            "cognito-identity.amazonaws.com:aud" = aws_cognito_identity_pool.osintube_identity_pool.id
+          }
+          "ForAnyValue:StringLike" = {
+            "cognito-identity.amazonaws.com:amr" = "authenticated"
+          }
+        }
+      }
+    ]
+  })
+}
+
+# Policy for full access to OSINTube resources
+resource "aws_iam_role_policy" "cognito_authenticated_policy" {
+  name = "cognito_authenticated_policy"
+  role = aws_iam_role.cognito_authenticated.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "dynamodb:*"
+        ]
+        Resource = aws_dynamodb_table.osintube_history.arn
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:*"
+        ]
+        Resource = [
+          aws_s3_bucket.osintube_data.arn,
+          "${aws_s3_bucket.osintube_data.arn}/*"
+        ]
+      }
+    ]
+  })
+}
+
+# Attach the role to the identity pool
+resource "aws_cognito_identity_pool_roles_attachment" "osintube_roles" {
+  identity_pool_id = aws_cognito_identity_pool.osintube_identity_pool.id
+
+  roles = {
+    "authenticated" = aws_iam_role.cognito_authenticated.arn
+  }
+}
+
+# Store Identity Pool ID in Parameter Store
+resource "aws_ssm_parameter" "cognito_identity_pool_id" {
+  name  = "/osintube/cognito_identity_pool_id"
+  type  = "String"
+  value = aws_cognito_identity_pool.osintube_identity_pool.id
+}
+
 # Store Cognito details in Parameter Store
 resource "aws_ssm_parameter" "cognito_user_pool_id" {
   name  = "/osintube/cognito_user_pool_id"

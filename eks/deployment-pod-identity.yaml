@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: osintube-app
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: osintube-app
+  template:
+    metadata:
+      labels:
+        app: osintube-app
+    spec:
+      serviceAccountName: osintube-readonly-sa  # Service account with read-only IAM role
+      containers:
+      - name: osintube-app
+        image: <account-id>.dkr.ecr.<region>.amazonaws.com/osintube:latest
+        ports:
+        - containerPort: 8501
+        env:
+        - name: AWS_REGION
+          value: "us-east-1"
+        - name: COGNITO_USER_POOL_ID
+          valueFrom:
+            secretKeyRef:
+              name: osintube-secrets
+              key: cognito-user-pool-id
+        - name: COGNITO_IDENTITY_POOL_ID
+          valueFrom:
+            secretKeyRef:
+              name: osintube-secrets
+              key: cognito-identity-pool-id
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: osintube-readonly-sa
+  namespace: default
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::<account-id>:role/OSINTubeReadOnlyRole
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: osintube-secrets
+  namespace: default
+type: Opaque
+data:
+  # Base64 encoded Cognito configuration
+  cognito-user-pool-id: <base64-encoded-user-pool-id>
+  cognito-identity-pool-id: <base64-encoded-identity-pool-id>

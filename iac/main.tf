@@ -43,16 +43,16 @@ resource "aws_secretsmanager_secret_version" "osintube_secrets" {
 }
 
 # ECR repository for container images
-resource "aws_ecr_repository" "osintube" {
-  name = "osintube"
-}
+# resource "aws_ecr_repository" "osintube" {
+#   name = "osintube"
+# }
 
 # Parameter for ECR repository URL
-resource "aws_ssm_parameter" "ecr_repository_url" {
-  name  = "/osintube/ecr_repository_url"
-  type  = "String"
-  value = aws_ecr_repository.osintube.repository_url
-}
+# resource "aws_ssm_parameter" "ecr_repository_url" {
+#   name  = "/osintube/ecr_repository_url"
+#   type  = "String"
+#   value = aws_ecr_repository.osintube.repository_url
+# }
 
 # S3 bucket for data storage
 resource "aws_s3_bucket" "osintube_data" {

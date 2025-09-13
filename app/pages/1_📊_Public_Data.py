@@ -4,16 +4,17 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import streamlit as st
 import pandas as pd
-import sys
-import os
 import boto3
 import pickle
 from datetime import datetime
 import pyfiglet
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+import importlib.util
 
-from shared_func.readonly_client import get_readonly_clients
-import config
+from shared_func.readonly_client import get_clients
+
+spec = importlib.util.spec_from_file_location("config", os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.py"))
+config = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(config)
 
 # Page config
 st.set_page_config(
@@ -79,8 +80,8 @@ st.markdown('<div class="cyber-title">📊 PUBLIC DATA EXPLORER 📊</div>', uns
 st.markdown("### 📋 Available Datasets")
 
 try:
-    # Get DynamoDB data
-    s3_client, dynamodb_client = get_readonly_clients()
+    # Get appropriate clients based on authentication
+    s3_client, dynamodb_client = get_clients()
     
     # Scan DynamoDB table
     response = dynamodb_client.scan(TableName='osintube')
@@ -187,19 +188,67 @@ try:
                         unique_videos = df_data['title'].nunique() if 'title' in df_data.columns else 0
                         st.metric("Unique Videos", unique_videos)
                     
-                    # Display data
+                    # Display data with enhanced styling
+                    st.markdown("### 📊 **Dataset Analysis**")
+                    
+                    # Add metrics row
+                    col1, col2, col3, col4 = st.columns(4)
+                    with col1:
+                        st.metric("📝 Total Comments", len(df_data))
+                    with col2:
+                        avg_sentiment = df_data.get('sentiment_score', [0]).mean() if 'sentiment_score' in df_data.columns else 0
+                        st.metric("😊 Avg Sentiment", f"{avg_sentiment:.2f}")
+                    with col3:
+                        unique_users = df_data['person'].nunique() if 'person' in df_data.columns else 0
+                        st.metric("👥 Unique Users", unique_users)
+                    with col4:
+                        unique_videos = df_data['title'].nunique() if 'title' in df_data.columns else 0
+                        st.metric("🎥 Videos", unique_videos)
+                    
+                    st.markdown("---")
+                    
+                    # Enhanced dataframe display
                     st.dataframe(
                         df_data, 
                         use_container_width=True,
-                        height=400,
+                        height=500,
                         column_config={
-                            "sentiment_score": st.column_config.NumberColumn("Sentiment", format="%.2f", width="small"),
-                            "comment": st.column_config.TextColumn("Comment", width="large"),
-                            "person": st.column_config.TextColumn("User", width="medium"),
-                            "user_channel": st.column_config.LinkColumn("User Channel", width="medium"),
-                            "title": st.column_config.TextColumn("Video", width="medium"),
-                            "translated": st.column_config.TextColumn("Translation", width="large"),
-                            "link": st.column_config.LinkColumn("Video Link", width="small"),
+                            "sentiment_score": st.column_config.NumberColumn(
+                                "😊 Sentiment", 
+                                format="%.2f", 
+                                width="small",
+                                help="Sentiment analysis score (0-1)"
+                            ),
+                            "comment": st.column_config.TextColumn(
+                                "💬 Comment", 
+                                width="large",
+                                help="Original user comment"
+                            ),
+                            "person": st.column_config.TextColumn(
+                                "👤 User", 
+                                width="medium",
+                                help="YouTube username"
+                            ),
+                            "user_channel": st.column_config.LinkColumn(
+                                "🔗 Channel", 
+                                width="medium",
+                                help="Click to visit user's YouTube channel"
+                            ),
+                            "title": st.column_config.TextColumn(
+                                "🎥 Video Title", 
+                                width="large",
+                                help="YouTube video title"
+                            ),
+                            "translated": st.column_config.TextColumn(
+                                "🌐 Translation", 
+                                width="large",
+                                help="Translated comment text"
+                            ),
+                            "link": st.column_config.LinkColumn(
+                                "▶️ Watch", 
+                                width="small",
+                                help="Click to watch the video"
+                            ),
                             "normalized": None  # Hide this column
                         },
                         hide_index=True

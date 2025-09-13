@@ -13,6 +13,11 @@ output "ecr_repository_url" {
   value       = aws_ecr_repository.osintube.repository_url
 }
 
+output "github_connection_arn" {
+  description = "ARN of the GitHub CodeConnections connection"
+  value       = aws_codestarconnections_connection.github.arn
+}
+
 # output "pod_role_arn" {
 #   description = "ARN of the pod IAM role"
 #   value       = aws_iam_role.osintube_pod_role.arn

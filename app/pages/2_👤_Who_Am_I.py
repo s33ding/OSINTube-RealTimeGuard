@@ -123,7 +123,7 @@ st.markdown("""
 <span class="output">OSINTube-RealTimeGuard: Real-time YouTube threat detection using AWS AI services for monitoring digital spaces and sentiment analysis.</span><br><br>
 
 <span class="prompt">root@osintube:~#</span> cat /skills/stack.txt<br>
-<span class="output">AWS • Python • Data Pipelines • Docker • OSINT • Analytics</span>
+<span class="output">AWS • Python • Data Pipelines • Container Orchestration • OSINT • Big Data</span>
 </div>
 """, unsafe_allow_html=True)
 
@@ -134,8 +134,9 @@ st.markdown("""
     <div class="skill-badge">🐍 Python Developer</div>
     <div class="skill-badge">🔄 Data Pipelines</div>
     <div class="skill-badge">🔍 OSINT Specialist</div>
-    <div class="skill-badge">📈 Data Analytics</div>
-    <div class="skill-badge">🐳 Docker & DevOps</div>
+    <div class="skill-badge">📈 Big Data Analytics</div>
+    <div class="skill-badge">🚢 Container Orchestration</div>
+    <div class="skill-badge">⚙️ DevOps</div>
 </div>
 """, unsafe_allow_html=True)
 

@@ -16,7 +16,7 @@ COPY requirements.txt .
 RUN python -m pip install -r requirements.txt
 
 # Copy application code
-COPY ../app ./app
+COPY app ./app
 
 EXPOSE 8501
 

@@ -21,6 +21,12 @@ variable "youtube_api_key" {
   sensitive   = true
 }
 
+variable "github_repo_url" {
+  description = "GitHub repository URL"
+  type        = string
+  default     = "https://github.com/s33ding/OSINTube-RealTimeGuard.git"
+}
+
 variable "google_client_id" {
   description = "Google OAuth Client ID"
   type        = string
