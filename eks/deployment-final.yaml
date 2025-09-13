@@ -13,6 +13,7 @@ spec:
       labels:
         app: osintube-app
     spec:
+      serviceAccountName: osintube-sa
       containers:
       - name: osintube-app
         image: 248189947068.dkr.ecr.us-east-1.amazonaws.com/osintube:latest

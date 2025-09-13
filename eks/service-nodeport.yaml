@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: osintube-nodeport
+  namespace: default
+spec:
+  selector:
+    app: osintube-app
+  ports:
+  - port: 8501
+    targetPort: 8501
+    nodePort: 30081
+    protocol: TCP
+  type: NodePort

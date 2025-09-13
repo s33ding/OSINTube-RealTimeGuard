@@ -1,0 +1,15 @@
+[server]
+port = 8501
+enableCORS = false
+enableXsrfProtection = false
+maxUploadSize = 200
+baseUrlPath = ""
+runOnSave = false
+
+[browser]
+gatherUsageStats = false
+serverAddress = "localhost"
+
+[runner]
+magicEnabled = false
+fastReruns = true

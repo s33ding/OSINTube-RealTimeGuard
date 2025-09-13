@@ -9,6 +9,11 @@ variable "eks_cluster_name" {
   type        = string
 }
 
+variable "eks_oidc_provider_id" {
+  description = "EKS OIDC provider ID"
+  type        = string
+}
+
 variable "s3_bucket_name" {
   description = "S3 bucket name for OSINTube data"
   type        = string

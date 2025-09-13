@@ -2,9 +2,17 @@ pandas
 boto3
 youtube-search-python
 google-api-python-client
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
 nltk
 transformers
 matplotlib
 streamlit
 openai
 altair
+wordcloud
+pyfiglet
+beautifulsoup4
+lxml
+pytz

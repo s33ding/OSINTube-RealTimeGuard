@@ -6,10 +6,16 @@ resource "aws_iam_role" "osintube_readonly_role" {
     Version = "2012-10-17"
     Statement = [
       {
-        Action = "sts:AssumeRole"
         Effect = "Allow"
         Principal = {
-          Service = "ec2.amazonaws.com"
+          Federated = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/oidc.eks.sa-east-1.amazonaws.com/id/${var.eks_oidc_provider_id}"
+        }
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Condition = {
+          StringEquals = {
+            "oidc.eks.sa-east-1.amazonaws.com/id/${var.eks_oidc_provider_id}:sub" = "system:serviceaccount:default:osintube-sa"
+            "oidc.eks.sa-east-1.amazonaws.com/id/${var.eks_oidc_provider_id}:aud" = "sts.amazonaws.com"
+          }
         }
       }
     ]
@@ -54,7 +60,30 @@ resource "aws_iam_policy" "osintube_readonly_dynamodb_policy" {
           "dynamodb:Query",
           "dynamodb:Scan"
         ]
-        Resource = aws_dynamodb_table.osintube_history.arn
+        Resource = [
+          aws_dynamodb_table.osintube_history.arn,
+          aws_dynamodb_table.threat_analysis.arn
+        ]
+      }
+    ]
+  })
+}
+
+# Read-only SSM policy
+resource "aws_iam_policy" "osintube_readonly_ssm_policy" {
+  name        = "osintube-readonly-ssm-policy"
+  description = "Read-only access to OSINTube SSM parameters"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ssm:GetParameter",
+          "ssm:GetParameters"
+        ]
+        Resource = "arn:aws:ssm:*:*:parameter/osintube/*"
       }
     ]
   })
@@ -69,6 +98,11 @@ resource "aws_iam_role_policy_attachment" "readonly_s3_attachment" {
 resource "aws_iam_role_policy_attachment" "readonly_dynamodb_attachment" {
   role       = aws_iam_role.osintube_readonly_role.name
   policy_arn = aws_iam_policy.osintube_readonly_dynamodb_policy.arn
+}
+
+resource "aws_iam_role_policy_attachment" "readonly_ssm_attachment" {
+  role       = aws_iam_role.osintube_readonly_role.name
+  policy_arn = aws_iam_policy.osintube_readonly_ssm_policy.arn
 }
 
 # Create access keys for read-only role (for programmatic access)
