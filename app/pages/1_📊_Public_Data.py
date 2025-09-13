@@ -207,9 +207,27 @@ try:
                     
                     st.markdown("---")
                     
+                    # Create display dataframe with clickable links
+                    display_df = df_data.copy()
+                    
+                    # Convert URLs to markdown links for better clickability
+                    if 'user_channel' in display_df.columns:
+                        display_df['user_channel'] = display_df.apply(
+                            lambda row: f"[🔗 {row.get('person', 'User')}]({row.get('user_channel', '#')})" 
+                            if pd.notna(row.get('user_channel')) else row.get('person', 'User'), 
+                            axis=1
+                        )
+                    
+                    if 'link' in display_df.columns:
+                        display_df['link'] = display_df.apply(
+                            lambda row: f"[▶️ Watch]({row.get('link', '#')})" 
+                            if pd.notna(row.get('link')) else 'No link', 
+                            axis=1
+                        )
+                    
                     # Enhanced dataframe display
                     st.dataframe(
-                        df_data, 
+                        display_df, 
                         use_container_width=True,
                         height=500,
                         column_config={
@@ -229,7 +247,7 @@ try:
                                 width="medium",
                                 help="YouTube username"
                             ),
-                            "user_channel": st.column_config.LinkColumn(
+                            "user_channel": st.column_config.TextColumn(
                                 "🔗 Channel", 
                                 width="medium",
                                 help="Click to visit user's YouTube channel"
@@ -244,7 +262,7 @@ try:
                                 width="large",
                                 help="Translated comment text"
                             ),
-                            "link": st.column_config.LinkColumn(
+                            "link": st.column_config.TextColumn(
                                 "▶️ Watch", 
                                 width="small",
                                 help="Click to watch the video"
