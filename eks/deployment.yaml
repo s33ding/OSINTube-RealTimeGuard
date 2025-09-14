@@ -22,6 +22,7 @@ spec:
       containers:
       - name: osintube
         image: 248189947068.dkr.ecr.us-east-1.amazonaws.com/osintube:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8501
         env:
@@ -29,6 +30,8 @@ spec:
           value: "us-east-1"
         - name: SECRET_NAME
           value: "osintube-secrets"
+        - name: STREAMLIT_BROWSER_SERVER_ADDRESS
+          value: "app.dataiesb.com"
         resources:
           requests:
             memory: "256Mi"
