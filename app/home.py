@@ -6,7 +6,7 @@ from datetime import datetime
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 import streamlit as st
-from shared_func.main_func import extract_data
+from config_loader import get_base_url
 import config
 from shared_func.s3_objects import *
 from shared_func.llama_agent import analyze_dataset_with_llama
@@ -109,12 +109,7 @@ if not is_authenticated():
     with col2:
         # Determine redirect URI based on environment
         import os
-        if os.environ.get('STREAMLIT_SERVER_PORT'):
-            # Production environment
-            redirect_uri = "https://app.dataiesb.com/osintube"
-        else:
-            # Local development
-            redirect_uri = "https://app.dataiesb.com/osintube"
+        redirect_uri = get_base_url()
         
         # Use config values instead of hardcoded
         cognito_domain = config.get_parameter('/osintube/cognito_domain')
