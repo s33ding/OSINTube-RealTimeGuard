@@ -16,7 +16,7 @@ import pyfiglet
 
 # Check authentication - redirect to login if not authenticated
 if not is_authenticated():
-    st.switch_page("login.py")
+    st.switch_page("pages/login.py")
 
 # Minimal CSS - remove heavy animations
 st.markdown("""

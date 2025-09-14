@@ -30,4 +30,4 @@ if is_authenticated():
 else:
     # Not authenticated - show login
     st.sidebar.error("🔒 Not logged in")
-    exec(open("login.py").read())
+    exec(open("pages/login.py").read())

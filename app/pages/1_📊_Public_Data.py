@@ -11,7 +11,7 @@ st.set_page_config(page_title="Public Data", page_icon="🛡️", layout="wide")
 
 # Check authentication
 if not is_authenticated():
-    st.switch_page("login.py")
+    st.switch_page("pages/login.py")
 
 # Same CSS as home page
 st.markdown("""
