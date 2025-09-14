@@ -69,6 +69,14 @@ footer {visibility: hidden;}
     margin: 1rem 0;
 }
 
+.emoji-title {
+    font-size: 2.5rem;
+    text-align: center;
+    margin: 1rem 0;
+    color: #00ff41;
+    text-shadow: 0 0 20px rgba(0,255,65,0.8);
+}
+
 @keyframes gradientShift {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -92,7 +100,10 @@ footer {visibility: hidden;}
 
 # Check authentication
 if not is_authenticated():
-    st.markdown('<div class="title-text">🔐 OSINTube Login</div>', unsafe_allow_html=True)
+    # ASCII title with animation for login
+    ascii_title = pyfiglet.figlet_format('OSINTube', font='big')
+    st.markdown(f'<div class="title-container">{ascii_title}</div>', unsafe_allow_html=True)
+    st.markdown('<div class="emoji-title">🔐 LOGIN REQUIRED 🔐</div>', unsafe_allow_html=True)
     
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:

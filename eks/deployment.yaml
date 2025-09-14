@@ -4,6 +4,10 @@ metadata:
   name: osintube-app
   labels:
     app: osintube
+  annotations:
+    keel.sh/policy: major
+    keel.sh/trigger: poll
+    keel.sh/pollSchedule: "@every 5m"
 spec:
   replicas: 2
   selector:
