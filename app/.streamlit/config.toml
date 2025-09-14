@@ -4,3 +4,9 @@ baseUrlPath = "/osintube"
 
 [browser]
 serverAddress = "app.dataiesb.com"
+
+[global]
+disableWatchdogWarning = true
+
+[client]
+caching = false
