@@ -12,11 +12,11 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 # Copy requirements and install dependencies
-COPY requirements.txt .
+COPY docker-image/requirements.txt .
 RUN python -m pip install -r requirements.txt
 
 # Copy application code
-COPY ../app ./app
+COPY app ./app
 
 EXPOSE 8501
 
