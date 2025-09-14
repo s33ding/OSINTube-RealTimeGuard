@@ -5,6 +5,14 @@ import json
 import config
 import os
 
+def get_redirect_uri():
+    """Get appropriate redirect URI based on environment"""
+    # Check if running locally
+    if os.getenv('BROWSER_SERVER_ADDRESS') == 'localhost' or 'localhost' in str(st.get_option("server.address")):
+        return "http://localhost:8501"
+    else:
+        return "https://app.dataiesb.com/osintube"
+
 def handle_oauth_callback():
     """Handle OAuth callback from Cognito"""
     query_params = st.query_params
@@ -19,7 +27,7 @@ def handle_oauth_callback():
             'grant_type': 'authorization_code',
             'client_id': config.cognito_client_id,
             'code': auth_code,
-            'redirect_uri': 'https://app.dataiesb.com/osintube'
+            'redirect_uri': get_redirect_uri()
         }
         
         response = requests.post(token_url, data=data)
@@ -66,5 +74,5 @@ def logout_user():
     st.session_state.user_email = None
     st.session_state.id_token = None
     
-    logout_url = f"https://{config.get_parameter('/osintube/cognito_domain')}.auth.us-east-1.amazoncognito.com/logout?client_id={config.cognito_client_id}&logout_uri=https://app.dataiesb.com/osintube"
+    logout_url = f"https://{config.get_parameter('/osintube/cognito_domain')}.auth.us-east-1.amazoncognito.com/logout?client_id={config.cognito_client_id}&logout_uri={get_redirect_uri()}"
     st.markdown(f'<meta http-equiv="refresh" content="0; url={logout_url}">', unsafe_allow_html=True)

@@ -23,8 +23,11 @@ st.markdown("---")
 cognito_domain = config.get_parameter('/osintube/cognito_domain')
 client_id = config.cognito_client_id
 
-# Use production redirect URI
-redirect_uri = "https://app.dataiesb.com/osintube"
+# Import the function to get dynamic redirect URI
+from shared_func.cognito_func import get_redirect_uri
+
+# Use dynamic redirect URI based on environment
+redirect_uri = get_redirect_uri()
 
 # Cognito Hosted UI URL
 login_url = f"https://{cognito_domain}.auth.us-east-1.amazoncognito.com/login?client_id={client_id}&response_type=code&scope=email+openid+profile&redirect_uri={redirect_uri}"

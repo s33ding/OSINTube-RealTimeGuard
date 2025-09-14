@@ -1,4 +1,5 @@
 import streamlit as st
+import os
 from shared_func.cognito_func import is_authenticated, get_current_user
 
 # Page config
@@ -20,9 +21,9 @@ if is_authenticated():
     )
     
     if page == "🏠 Home":
-        exec(open("home.py").read())
+        exec(open(os.path.join(os.path.dirname(__file__), "home.py")).read())
     elif page == "📊 History":
-        exec(open("pages/history.py").read())
+        exec(open(os.path.join(os.path.dirname(__file__), "pages/history.py")).read())
     elif page == "🚪 Logout":
         from shared_func.cognito_func import logout_user
         logout_user()
@@ -30,4 +31,4 @@ if is_authenticated():
 else:
     # Not authenticated - show login
     st.sidebar.error("🔒 Not logged in")
-    exec(open("pages/login.py").read())
+    exec(open(os.path.join(os.path.dirname(__file__), "pages/login.py")).read())
