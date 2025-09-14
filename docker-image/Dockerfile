@@ -16,7 +16,7 @@ COPY docker-image/requirements.txt .
 RUN python -m pip install --no-cache-dir -r requirements.txt
 
 # Copy application code (last to maximize cache hits)
-COPY app/* ./
+COPY app ./
 
 # Environment variables
 ENV STREAMLIT_SERVER_ADDRESS=0.0.0.0
