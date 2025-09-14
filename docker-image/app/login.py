@@ -23,8 +23,11 @@ st.markdown("---")
 cognito_domain = config.get_parameter('/osintube/cognito_domain')
 client_id = config.cognito_client_id
 
+# Use production redirect URI
+redirect_uri = "https://app.dataiesb.com/osintube"
+
 # Cognito Hosted UI URL
-login_url = f"https://{cognito_domain}.auth.us-east-1.amazoncognito.com/login?client_id={client_id}&response_type=code&scope=email+openid+profile&redirect_uri=http://localhost:8501"
+login_url = f"https://{cognito_domain}.auth.us-east-1.amazoncognito.com/login?client_id={client_id}&response_type=code&scope=email+openid+profile&redirect_uri={redirect_uri}"
 
 st.markdown("### 🚀 Access OSINTube System")
 st.info("🔒 **Restricted Access**: Only authorized IESB personnel can access this system.")

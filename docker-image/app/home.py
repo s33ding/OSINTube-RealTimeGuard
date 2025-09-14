@@ -96,7 +96,19 @@ if not is_authenticated():
     
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        oauth_url = "https://osintube-w7p7627g.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id=3gqft9u0m22tlviqpgepumnm3m&response_type=code&scope=email+openid&redirect_uri=http://localhost:8501"
+        # Determine redirect URI based on environment
+        import os
+        if os.environ.get('STREAMLIT_SERVER_PORT'):
+            # Production environment
+            redirect_uri = "https://app.dataiesb.com/osintube"
+        else:
+            # Local development
+            redirect_uri = "http://localhost:8501"
+        
+        # Use config values instead of hardcoded
+        cognito_domain = config.get_parameter('/osintube/cognito_domain')
+        client_id = config.cognito_client_id
+        oauth_url = f"https://{cognito_domain}.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id={client_id}&response_type=code&scope=email+openid&redirect_uri={redirect_uri}"
         st.link_button("🔐 Login with Google", oauth_url, type="primary")
         if st.button("📊 View Public Data", type="secondary"):
             st.switch_page("pages/1_📊_Public_Data.py")

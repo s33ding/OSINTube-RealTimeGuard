@@ -1,13 +1,9 @@
 import streamlit as st
+import pyfiglet
 
-# Page config
-st.set_page_config(
-    page_title="WHOAMI - Roberto Moreira Diniz",
-    page_icon="💀",
-    layout="wide"
-)
+st.set_page_config(page_title="Who Am I", page_icon="👤", layout="wide")
 
-# TryHackMe style CSS
+# Same CSS as other pages
 st.markdown("""
 <style>
 .stApp > header {visibility: hidden;}
@@ -15,34 +11,39 @@ st.markdown("""
 footer {visibility: hidden;}
 .main .block-container {padding-top: 0rem;}
 
-body {
-    background: #212529;
-    color: #ffffff;
-}
-
-.thm-header {
-    background: linear-gradient(135deg, #212529 0%, #343a40 100%);
-    padding: 2rem;
-    border-radius: 10px;
-    border: 2px solid #00d4aa;
-    margin-bottom: 2rem;
+.title-container {
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57, #ff9ff3, #54a0ff);
+    background-size: 400% 400%;
+    animation: gradientShift 8s ease infinite;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     text-align: center;
-}
-
-.thm-title {
     font-family: 'Courier New', monospace;
-    font-size: 3rem;
     font-weight: bold;
-    color: #00d4aa;
-    text-shadow: 0 0 20px #00d4aa;
-    margin: 0;
+    padding: 1rem;
+    white-space: pre;
+    font-size: 0.8rem;
+    line-height: 1;
 }
 
-.thm-subtitle {
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.cyber-title {
     font-family: 'Courier New', monospace;
-    color: #ffffff;
-    font-size: 1.2rem;
-    margin-top: 0.5rem;
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-align: center;
+    background: linear-gradient(45deg, #00d4aa, #00ff41);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 1rem 0;
+    text-shadow: 0 0 20px rgba(0, 212, 170, 0.5);
 }
 
 .terminal-box {
@@ -54,105 +55,38 @@ body {
     color: #00d4aa;
     margin: 1rem 0;
 }
-
-.prompt {
-    color: #ff6b6b;
-    font-weight: bold;
-}
-
-.output {
-    color: #ffffff;
-    margin-left: 1rem;
-}
-
-.thm-button {
-    background: linear-gradient(135deg, #00d4aa 0%, #00b894 100%);
-    color: #ffffff;
-    padding: 12px 24px;
-    border: none;
-    border-radius: 6px;
-    font-family: 'Courier New', monospace;
-    font-weight: bold;
-    text-decoration: none;
-    display: inline-block;
-    margin: 1rem 0;
-    transition: all 0.3s ease;
-}
-
-.thm-button:hover {
-    background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 212, 170, 0.3);
-}
-
-.skills-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin: 1rem 0;
-}
-
-.skill-badge {
-    background: #343a40;
-    border: 1px solid #00d4aa;
-    border-radius: 6px;
-    padding: 0.5rem;
-    text-align: center;
-    color: #00d4aa;
-    font-family: 'Courier New', monospace;
-    font-size: 0.9rem;
-}
 </style>
 """, unsafe_allow_html=True)
 
-# Header
-st.markdown("""
-<div class="thm-header">
-    <div class="thm-title">🥷🏿 WHOAMI 🥷🏿</div>
-    <div class="thm-subtitle">DataOps Engineer & OSINT Enthusiast</div>
-</div>
-""", unsafe_allow_html=True)
+# Title section
+st.markdown('<div class="cyber-title">Roberto Moreira Diniz</div>', unsafe_allow_html=True)
+st.markdown('<div style="text-align: center; font-size: 3rem; margin: 1rem 0;">🥷🏿</div>', unsafe_allow_html=True)
+st.markdown('<div style="text-align: center; color: #00d4aa; font-family: Courier New, monospace; font-size: 1.2rem; margin-bottom: 2rem;">DataOps Engineer & OSINT Enthusiast</div>', unsafe_allow_html=True)
 
-# Terminal section
+# Terminal info
 st.markdown("""
 <div class="terminal-box">
-<span class="prompt">root@osintube:~#</span> cat /etc/passwd | grep roberto<br>
-<span class="output">roberto:x:1337:1337:DataOps Engineer:/home/roberto:/bin/bash</span><br><br>
+<span style="color: #ff6b6b;">s33ding🌿osintubeRealTimeGuard:~$</span> whoami<br>
+<span style="color: #ffffff;">s33ding</span><br><br>
 
-<span class="prompt">root@osintube:~#</span> ls -la /projects/<br>
-<span class="output">OSINTube-RealTimeGuard: Real-time YouTube threat detection using AWS AI services for monitoring digital spaces and sentiment analysis.</span><br><br>
+<span style="color: #ff6b6b;">s33ding🌿osintubeRealTimeGuard:~$</span> cat /about/me.txt<br>
+<span style="color: #ffffff;">Passionate DataOps Engineer specializing in OSINT and threat detection systems. Expert in building real-time data pipelines and AI-powered security analytics using AWS cloud infrastructure.</span><br><br>
 
-<span class="prompt">root@osintube:~#</span> cat /skills/stack.txt<br>
-<span class="output">AWS • Python • Data Pipelines • Container Orchestration • OSINT • Big Data</span>
+<span style="color: #ff6b6b;">s33ding🌿osintubeRealTimeGuard:~$</span> cat /projects/current.txt<br>
+<span style="color: #ffffff;">OSINTube-RealTimeGuard is an advanced OSINT (Open Source Intelligence) platform that monitors YouTube content in real-time to detect potential security threats, hate speech, and suspicious activities. Built with AWS cloud infrastructure and powered by LLaMA AI.</span><br><br>
+
+<span style="color: #ff6b6b;">s33ding🌿osintubeRealTimeGuard:~$</span> cat /skills/stack.txt<br>
+<span style="color: #ffffff;">AWS • Python • Streamlit • Docker • Terraform • DynamoDB • S3 • Bedrock • LLaMA • OSINT • Threat Detection • Data Pipelines • DevOps</span>
 </div>
 """, unsafe_allow_html=True)
 
-# Skills badges
-st.markdown("""
-<div class="skills-grid">
-    <div class="skill-badge">📊 DataOps Engineer</div>
-    <div class="skill-badge">🐍 Python Developer</div>
-    <div class="skill-badge">🔄 Data Pipelines</div>
-    <div class="skill-badge">🔍 OSINT Specialist</div>
-    <div class="skill-badge">📈 Big Data Analytics</div>
-    <div class="skill-badge">🚢 Container Orchestration</div>
-    <div class="skill-badge">⚙️ DevOps</div>
-</div>
-""", unsafe_allow_html=True)
-
-# Resume download
+# Link to resume page
 st.markdown("""
 <div style="text-align: center; margin: 2rem 0;">
     <a href="https://robertomdiniz.s3.us-east-1.amazonaws.com/roberto-resume.pdf" 
-       target="_blank" class="thm-button">
-       📄 DOWNLOAD RESUME
+       target="_blank" 
+       style="background: #00d4aa; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-family: 'Courier New', monospace; font-weight: bold;">
+       📄 View Full Resume
     </a>
-</div>
-""", unsafe_allow_html=True)
-
-# Footer
-st.markdown("""
-<div style="text-align: center; margin-top: 3rem; color: #6c757d; font-family: 'Courier New', monospace;">
-    🛡️ [SECURITY_LEVEL: MAXIMUM] 🛡️
 </div>
 """, unsafe_allow_html=True)

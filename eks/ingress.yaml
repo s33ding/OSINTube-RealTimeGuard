@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: osintube-ingress
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:sa-east-1:248189947068:certificate/daf9441e-ba09-4370-b348-149a665a3788
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+    alb.ingress.kubernetes.io/redirect-to-https: "true"
+spec:
+  rules:
+  - host: app.dataiesb.com
+    http:
+      paths:
+      - path: /osintube
+        pathType: Prefix
+        backend:
+          service:
+            name: osintube-service
+            port:
+              number: 80

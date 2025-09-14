@@ -124,3 +124,21 @@ resource "aws_codebuild_project" "osintube" {
 
   source_version = "main"
 }
+
+# CodeBuild Webhook for automatic triggering
+resource "aws_codebuild_webhook" "osintube" {
+  project_name = aws_codebuild_project.osintube.name
+  build_type   = "BUILD"
+
+  filter_group {
+    filter {
+      type    = "EVENT"
+      pattern = "PUSH"
+    }
+
+    filter {
+      type    = "HEAD_REF"
+      pattern = "refs/heads/main"
+    }
+  }
+}

@@ -66,16 +66,16 @@ st.markdown('<div style="text-align: center; color: #00d4aa; font-family: Courie
 # Terminal info
 st.markdown("""
 <div class="terminal-box">
-<span style="color: #ff6b6b;">root@osintube:~#</span> whoami<br>
-<span style="color: #ffffff;">roberto:x:1337:1337:DataOps Engineer:/home/roberto:/bin/bash</span><br><br>
+<span style="color: #ff6b6b;">s33ding🌿osintubeRealTimeGuard:~$</span> whoami<br>
+<span style="color: #ffffff;">s33ding</span><br><br>
 
-<span style="color: #ff6b6b;">root@osintube:~#</span> cat /about/me.txt<br>
+<span style="color: #ff6b6b;">s33ding🌿osintubeRealTimeGuard:~$</span> cat /about/me.txt<br>
 <span style="color: #ffffff;">Passionate DataOps Engineer specializing in OSINT and threat detection systems. Expert in building real-time data pipelines and AI-powered security analytics using AWS cloud infrastructure.</span><br><br>
 
-<span style="color: #ff6b6b;">root@osintube:~#</span> cat /projects/current.txt<br>
+<span style="color: #ff6b6b;">s33ding🌿osintubeRealTimeGuard:~$</span> cat /projects/current.txt<br>
 <span style="color: #ffffff;">OSINTube-RealTimeGuard is an advanced OSINT (Open Source Intelligence) platform that monitors YouTube content in real-time to detect potential security threats, hate speech, and suspicious activities. Built with AWS cloud infrastructure and powered by LLaMA AI.</span><br><br>
 
-<span style="color: #ff6b6b;">root@osintube:~#</span> cat /skills/stack.txt<br>
+<span style="color: #ff6b6b;">s33ding🌿osintubeRealTimeGuard:~$</span> cat /skills/stack.txt<br>
 <span style="color: #ffffff;">AWS • Python • Streamlit • Docker • Terraform • DynamoDB • S3 • Bedrock • LLaMA • OSINT • Threat Detection • Data Pipelines • DevOps</span>
 </div>
 """, unsafe_allow_html=True)
