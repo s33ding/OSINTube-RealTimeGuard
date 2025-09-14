@@ -8,7 +8,7 @@ runOnSave = false
 
 [browser]
 gatherUsageStats = false
-serverAddress = "localhost"
+serverAddress = "app.dataiesb.com"
 
 [runner]
 magicEnabled = false
