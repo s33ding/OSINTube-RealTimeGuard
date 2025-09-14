@@ -1,9 +1,9 @@
 [server]
 port = 8501
-baseUrlPath = "/osintube"
+baseUrlPath = ""
 
 [browser]
-serverAddress = "app.dataiesb.com"
+serverAddress = "osintube.dataiesb.com"
 
 [global]
 disableWatchdogWarning = true
