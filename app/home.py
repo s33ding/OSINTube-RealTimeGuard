@@ -114,7 +114,7 @@ if not is_authenticated():
             redirect_uri = "https://app.dataiesb.com/osintube"
         else:
             # Local development
-            redirect_uri = "http://localhost:8501"
+            redirect_uri = "https://app.dataiesb.com/osintube"
         
         # Use config values instead of hardcoded
         cognito_domain = config.get_parameter('/osintube/cognito_domain')
