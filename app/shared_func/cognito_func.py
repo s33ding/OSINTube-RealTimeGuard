@@ -3,6 +3,7 @@ import requests
 import base64
 import json
 import config
+import os
 
 def handle_oauth_callback():
     """Handle OAuth callback from Cognito"""
@@ -36,11 +37,15 @@ def handle_oauth_callback():
                 
                 user_email = decoded.get('email')
                 
+                # Only allow roberto.diniz@iesb.edu.br
                 if user_email == 'roberto.diniz@iesb.edu.br':
                     st.session_state.authenticated = True
                     st.session_state.user_email = user_email
                     st.session_state.id_token = id_token
                     st.rerun()
+                else:
+                    st.error("❌ Access denied. Only roberto.diniz@iesb.edu.br is authorized.")
+                    st.stop()
 
 def is_authenticated():
     """Check if user is authenticated"""

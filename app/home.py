@@ -14,16 +14,9 @@ from shared_func.dynamodb_func import log_search_to_dynamodb
 from shared_func.cognito_func import is_authenticated, get_current_user, logout_user
 import pyfiglet
 
-# Handle OAuth callback once
-if 'auth_processed' not in st.session_state:
-    query_params = st.query_params
-    auth_code = query_params.get('code')
-    if auth_code:
-        st.session_state.authenticated = True
-        st.session_state.user_email = 'roberto.diniz@iesb.edu.br'
-        st.session_state.auth_processed = True
-        st.rerun()
-    st.session_state.auth_processed = True
+# Check authentication - redirect to login if not authenticated
+if not is_authenticated():
+    st.switch_page("login.py")
 
 # Minimal CSS - remove heavy animations
 st.markdown("""

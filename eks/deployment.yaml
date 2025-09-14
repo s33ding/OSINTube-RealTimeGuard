@@ -9,7 +9,7 @@ metadata:
     keel.sh/trigger: poll
     keel.sh/pollSchedule: "@every 5m"
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: osintube

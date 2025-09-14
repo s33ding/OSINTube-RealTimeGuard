@@ -5,8 +5,13 @@ import pyfiglet
 from shared_func.readonly_client import get_clients
 from shared_func.sentiment_viz import create_sentiment_combined, create_sentiment_counts
 from shared_func.llama_agent import analyze_dataset_with_llama
+from shared_func.cognito_func import is_authenticated
 
 st.set_page_config(page_title="Public Data", page_icon="🛡️", layout="wide")
+
+# Check authentication
+if not is_authenticated():
+    st.switch_page("login.py")
 
 # Same CSS as home page
 st.markdown("""
