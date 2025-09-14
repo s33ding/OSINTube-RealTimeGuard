@@ -216,7 +216,19 @@ if run_button and input_data:
             
             # Display results
             st.success(f"✅ Loaded {len(df)} records")
-            st.dataframe(df, use_container_width=True, height=800)
+            st.dataframe(df, use_container_width=True, height=400)
+            
+            # Add Llama analysis button
+            if st.button("🤖 Generate AI Threat Analysis", type="primary"):
+                with st.spinner("🧠 Analyzing threats with AI..."):
+                    analysis_result = analyze_dataset_with_llama(df, s3_key, config.bucket_name, input_data)
+                    
+                    if analysis_result['status'] == 'success':
+                        st.success("✅ AI Analysis Complete!")
+                        # Display HTML analysis
+                        st.components.v1.html(analysis_result['analysis'], height=800, scrolling=True)
+                    else:
+                        st.error(f"❌ Analysis failed: {analysis_result.get('error', 'Unknown error')}")
                 
             st.success("📝 Search logged to history")
             

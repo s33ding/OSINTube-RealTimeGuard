@@ -1,5 +1,6 @@
 import json
 import boto3
+import pandas as pd
 from datetime import datetime
 
 def analyze_dataset_with_llama(df, s3_key, bucket_name, input_data):
@@ -65,26 +66,59 @@ def analyze_dataset_with_llama(df, s3_key, bucket_name, input_data):
             user = row.get('person', 'Unknown')
             critical_data += f"ROW {idx}: User: {user} | Sentiment: {sentiment} | Comment: {original}\n"
         
-        prompt = f"""THREAT ANALYSIS - Analyzing {len(critical_comments)} comments:
+        prompt = f"""Generate HTML threat analysis for {len(critical_comments)} comments. Use this exact format:
 
 {critical_data}
 
-Find threats and highlight specific rows with user information.
+Return ONLY valid HTML with this structure:
 
-**HIGHLIGHTED ROWS:**
-- ROW X: [Quote] - USER: [Username] - REASON: [Threat type]
+<div class="threat-analysis">
+<h2>🚨 THREAT ANALYSIS REPORT</h2>
 
-**SUMMARY:**
-- Threat Level: [Low/Medium/High]
-- Total Threats Found: [Number]
-- Unique Threatening Users: [Number]
-- Most Common Threat Type: [Type]
+<div class="highlighted-rows">
+<h3>⚠️ CRITICAL THREATS DETECTED</h3>
+<table class="threat-table">
+<tr><th>Row</th><th>User</th><th>Threat Level</th><th>Comment</th><th>Risk Type</th></tr>
+<tr class="high-threat"><td>ROW X</td><td>Username</td><td>HIGH</td><td>Comment excerpt</td><td>Violence/Hate/etc</td></tr>
+</table>
+</div>
 
-**GRAPH ANALYSIS:**
-- Sentiment Distribution: [Average, min, max sentiment scores of threats]
-- Threat Concentration: [% of threats from top users]
-- Language Patterns: [% with CAPS, % with exclamations, keyword frequency]
-- Risk Assessment: [Statistical trend analysis]"""
+<div class="summary-stats">
+<h3>📊 ANALYSIS SUMMARY</h3>
+<div class="stat-grid">
+<div class="stat-card threat-level-high"><span class="stat-number">X</span><span class="stat-label">High Threats</span></div>
+<div class="stat-card threat-level-medium"><span class="stat-number">X</span><span class="stat-label">Medium Threats</span></div>
+<div class="stat-card users-count"><span class="stat-number">X</span><span class="stat-label">Unique Users</span></div>
+</div>
+</div>
+
+<div class="risk-metrics">
+<h3>📈 RISK METRICS</h3>
+<ul>
+<li><strong>Sentiment Range:</strong> X.XX to X.XX (avg: X.XX)</li>
+<li><strong>Language Patterns:</strong> X% CAPS, X% exclamations</li>
+<li><strong>Threat Distribution:</strong> X% violence, X% hate speech</li>
+</ul>
+</div>
+</div>
+
+<style>
+.threat-analysis { font-family: Arial, sans-serif; max-width: 1000px; margin: 20px auto; }
+.threat-table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+.threat-table th, .threat-table td { padding: 12px; text-align: left; border: 1px solid #ddd; }
+.threat-table th { background: #f44336; color: white; }
+.high-threat { background: #ffebee; border-left: 4px solid #f44336; }
+.medium-threat { background: #fff3e0; border-left: 4px solid #ff9800; }
+.stat-grid { display: flex; gap: 15px; flex-wrap: wrap; }
+.stat-card { background: #f5f5f5; padding: 20px; border-radius: 8px; text-align: center; min-width: 120px; }
+.stat-number { display: block; font-size: 2em; font-weight: bold; color: #f44336; }
+.stat-label { display: block; font-size: 0.9em; color: #666; }
+.threat-level-high .stat-number { color: #f44336; }
+.threat-level-medium .stat-number { color: #ff9800; }
+.users-count .stat-number { color: #2196f3; }
+h2, h3 { color: #333; }
+ul li { margin: 8px 0; }
+</style>"""
 
         print(f"DEBUG: Prompt length: {len(prompt)} characters")
         
@@ -119,14 +153,25 @@ Find threats and highlight specific rows with user information.
             print(f"DEBUG: Bedrock error: {bedrock_error}")
             analysis = f"BEDROCK ERROR: {str(bedrock_error)}"
         
-        # Save analysis to S3
+        # Save analysis to S3 (both HTML and text versions)
         s3 = boto3.client('s3', region_name='us-east-1')
-        analysis_key = f"analysis/{s3_key.replace('.pickle', '_analysis.txt')}"
+        analysis_key = f"analysis/{s3_key.replace('.pickle', '_analysis.html')}"
+        text_key = f"analysis/{s3_key.replace('.pickle', '_analysis.txt')}"
         
+        # Save HTML version
         s3.put_object(
             Bucket=bucket_name,
             Key=analysis_key,
-            Body=analysis.encode('utf-8')
+            Body=analysis.encode('utf-8'),
+            ContentType='text/html'
+        )
+        
+        # Save text version for backup
+        s3.put_object(
+            Bucket=bucket_name,
+            Key=text_key,
+            Body=analysis.encode('utf-8'),
+            ContentType='text/plain'
         )
         
         # Save metadata to DynamoDB

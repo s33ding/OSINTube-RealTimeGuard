@@ -9,9 +9,7 @@ from shared_func.cognito_func import is_authenticated
 
 st.set_page_config(page_title="Public Data", page_icon="🛡️", layout="wide")
 
-# Check authentication
-if not is_authenticated():
-    st.switch_page("pages/login.py")
+# Public page - no authentication required
 
 # Same CSS as home page
 st.markdown("""
