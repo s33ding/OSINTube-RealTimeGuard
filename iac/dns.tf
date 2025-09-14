@@ -44,7 +44,7 @@ resource "aws_route53_record" "osintube" {
   type    = "A"
   
   alias {
-    name                   = "k8s-default-ingressi-73bd0705e3-102651203.sa-east-1.elb.amazonaws.com"
+    name                   = "k8s-default-osintube-41e64b89e2-1001580453.sa-east-1.elb.amazonaws.com"
     zone_id                = "Z2P70J7HTTTPLU"
     evaluate_target_health = true
   }

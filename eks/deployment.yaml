@@ -21,7 +21,7 @@ spec:
       serviceAccountName: osintube-sa
       containers:
       - name: osintube
-        image: osintube-app:latest
+        image: 248189947068.dkr.ecr.us-east-1.amazonaws.com/osintube:latest
         ports:
         - containerPort: 8501
         env:
@@ -38,13 +38,13 @@ spec:
             cpu: "500m"
         livenessProbe:
           httpGet:
-            path: /_stcore/health
+            path: /osintube/_stcore/health
             port: 8501
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:
           httpGet:
-            path: /_stcore/health
+            path: /osintube/_stcore/health
             port: 8501
           initialDelaySeconds: 5
           periodSeconds: 5
