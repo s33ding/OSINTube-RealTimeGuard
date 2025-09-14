@@ -66,18 +66,26 @@ def analyze_dataset_with_llama(df, s3_key, bucket_name, input_data):
             user = row.get('person', 'Unknown')
             critical_data += f"ROW {idx}: User: {user} | Sentiment: {sentiment} | Comment: {original}\n"
         
-        prompt = f"""Generate HTML threat analysis for {len(critical_comments)} comments. Use this exact format:
+        prompt = f"""Analyze {len(critical_comments)} comments and highlight ONLY the 3-5 most dangerous ones:
 
 {critical_data}
 
-Return ONLY valid HTML with this structure:
+INSTRUCTIONS:
+- Select only the TOP 3-5 most threatening comments
+- Focus on violence, threats, extremism, hate speech
+- Use class="high-threat" for selected rows
+- Skip less dangerous content
+
+Return ONLY this HTML:
 
 <div class="threat-analysis">
 <h2>🚨 THREAT ANALYSIS REPORT</h2>
 
 <div class="highlighted-rows">
-<h3>⚠️ CRITICAL THREATS DETECTED</h3>
+<h3>🔥 TOP THREATS REQUIRING IMMEDIATE ATTENTION</h3>
+<p style="color: #d32f2f; font-weight: bold;">Only the most dangerous content is shown below:</p>
 <table class="threat-table">
+<tr><th>Row</th><th>User</th><th>Threat Level</th><th>Comment Preview</th><th>Risk Category</th><th>Sentiment</th></tr>
 <tr><th>Row</th><th>User</th><th>Threat Level</th><th>Comment</th><th>Risk Type</th></tr>
 <tr class="high-threat"><td>ROW X</td><td>Username</td><td>HIGH</td><td>Comment excerpt</td><td>Violence/Hate/etc</td></tr>
 </table>
@@ -107,7 +115,8 @@ Return ONLY valid HTML with this structure:
 .threat-table { width: 100%; border-collapse: collapse; margin: 15px 0; }
 .threat-table th, .threat-table td { padding: 12px; text-align: left; border: 1px solid #ddd; }
 .threat-table th { background: #f44336; color: white; }
-.high-threat { background: #ffebee; border-left: 4px solid #f44336; }
+.high-threat { background: #ffcdd2; border-left: 8px solid #d32f2f; font-weight: bold; animation: pulse 2s infinite; }
+@keyframes pulse {{ 0% {{ box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.7); }} 70% {{ box-shadow: 0 0 0 10px rgba(211, 47, 47, 0); }} 100% {{ box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); }} }}
 .medium-threat { background: #fff3e0; border-left: 4px solid #ff9800; }
 .stat-grid { display: flex; gap: 15px; flex-wrap: wrap; }
 .stat-card { background: #f5f5f5; padding: 20px; border-radius: 8px; text-align: center; min-width: 120px; }
