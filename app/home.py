@@ -241,6 +241,6 @@ if run_button and input_data:
         status_text.empty()
         st.session_state.processing = False
 
-# Credits
+# Credits - CI/CD Test
 st.markdown("---")
 st.markdown("**👨💻 Developed by Roberto Moreira Diniz**")
