@@ -22,4 +22,4 @@ else:
     )
 
 # Execute home functionality
-exec(open("app/home.py").read())
+exec(open("home.py").read())
