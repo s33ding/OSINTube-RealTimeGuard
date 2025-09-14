@@ -18,8 +18,8 @@ RUN python -m pip install -r requirements.txt
 # Copy application code
 COPY app ./app
 
-# Copy streamlit config to working directory
-COPY app/.streamlit ./.streamlit
+# Copy streamlit config from docker-image to working directory
+COPY docker-image/app/.streamlit ./.streamlit
 
 EXPOSE 8501
 
