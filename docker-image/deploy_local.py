@@ -75,7 +75,7 @@ def deploy_docker_locally():
         f"{ecr_url}:latest"
     ], check=True)
     
-    print("Container running at http://localhost:8501")
+    print("Container running at http://localhost:8501/osintube")
 
 if __name__ == "__main__":
     deploy_docker_locally()
