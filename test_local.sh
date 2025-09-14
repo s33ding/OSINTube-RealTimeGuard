@@ -27,6 +27,7 @@ source /tmp/aws_creds.sh
 # Build and run locally with AWS credentials
 docker build -f docker-image/Dockerfile -t osintube-test .
 docker run --name osintube-test -p 8501:8501 \
+  -v $(pwd)/app/:/app/ \
   -e AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" \
   -e AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" \
   -e AWS_SESSION_TOKEN="$AWS_SESSION_TOKEN" \

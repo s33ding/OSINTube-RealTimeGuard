@@ -16,7 +16,7 @@ COPY docker-image/requirements.txt .
 RUN python -m pip install --no-cache-dir -r requirements.txt
 
 # Copy application code (last to maximize cache hits)
-COPY app ./app
+COPY app/* ./
 
 # Environment variables
 ENV STREAMLIT_SERVER_ADDRESS=0.0.0.0
@@ -28,4 +28,4 @@ EXPOSE 8501
 
 HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
 
-CMD ["streamlit", "run", "app/🏠_Home.py"]
+CMD ["streamlit", "run", "🏠_Home.py"]
