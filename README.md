@@ -94,7 +94,8 @@ streamlit run app/main.py
 
 ## 🎯 Demo
 
-Check out the live demonstration: [YouTube Demo Video](https://www.youtube.com/watch?v=7DeVyUtODWM)
+- **Live Application**: [app.dataiesb.com/osintube](https://app.dataiesb.com/osintube)
+- **Video Demo**: [YouTube Demo Video](https://www.youtube.com/watch?v=7DeVyUtODWM)
 
 ## 🤝 Contributing
 
