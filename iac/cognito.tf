@@ -58,14 +58,12 @@ resource "aws_cognito_user_pool_client" "osintube_client" {
   allowed_oauth_scopes                 = ["email", "openid", "profile"]
   allowed_oauth_flows_user_pool_client = true
   callback_urls                        = [
-    "https://app.dataiesb.com/osintube/callback", 
-    "https://app.dataiesb.com/osintube",
-    "http://localhost:8501/callback",
-    "http://localhost:8501"
+    "https://app.dataiesb.com/osintube", 
+    "http://localhost:8501/osintube"
   ]
   logout_urls                          = [
     "https://app.dataiesb.com/osintube",
-    "http://localhost:8501"
+    "http://localhost:8501/osintube"
   ]
   
   # Use Google as identity provider

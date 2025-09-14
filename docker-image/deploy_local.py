@@ -66,7 +66,7 @@ def deploy_docker_locally():
         "docker", "run", "-d",
         "--name", "osintube-local", 
         "-p", "8501:8501",
-        "-e", "BASE_URL_PATH=",
+        "-e", "BASE_URL_PATH=/osintube",
         "-e", "BROWSER_SERVER_ADDRESS=localhost",
         "-e", f"AWS_ACCESS_KEY_ID={credentials['AccessKeyId']}",
         "-e", f"AWS_SECRET_ACCESS_KEY={credentials['SecretAccessKey']}",

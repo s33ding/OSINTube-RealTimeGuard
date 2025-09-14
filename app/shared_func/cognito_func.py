@@ -7,9 +7,11 @@ import os
 
 def get_redirect_uri():
     """Get appropriate redirect URI based on environment"""
-    # Check if running locally
-    if os.getenv('BROWSER_SERVER_ADDRESS') == 'localhost' or 'localhost' in str(st.get_option("server.address")):
-        return "http://localhost:8501"
+    # Check if running locally - Docker sets BROWSER_SERVER_ADDRESS to localhost by default
+    browser_address = os.getenv('STREAMLIT_BROWSER_SERVER_ADDRESS', '')
+    
+    if 'localhost' in browser_address or browser_address == 'localhost':
+        return "http://localhost:8501/osintube"
     else:
         return "https://app.dataiesb.com/osintube"
 
