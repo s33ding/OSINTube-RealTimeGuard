@@ -2,3 +2,5 @@ streamlit
 requests
 boto3
 PyJWT
+google-api-python-client
+nltk
