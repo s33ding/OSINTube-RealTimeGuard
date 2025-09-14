@@ -1,15 +1,6 @@
 [server]
 port = 8501
-enableCORS = false
-enableXsrfProtection = false
-maxUploadSize = 200
-baseUrlPath = ""
-runOnSave = false
+baseUrlPath = "/osintube"
 
 [browser]
-gatherUsageStats = false
 serverAddress = "app.dataiesb.com"
-
-[runner]
-magicEnabled = false
-fastReruns = true
