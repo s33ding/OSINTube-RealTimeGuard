@@ -17,6 +17,13 @@ resource "aws_iam_role" "osintube_readonly_role" {
             "oidc.eks.sa-east-1.amazonaws.com/id/${var.eks_oidc_provider_id}:aud" = "sts.amazonaws.com"
           }
         }
+      },
+      {
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/ra-2112120032-roberto-diniz"
+        }
+        Action = "sts:AssumeRole"
       }
     ]
   })
@@ -89,6 +96,28 @@ resource "aws_iam_policy" "osintube_readonly_ssm_policy" {
   })
 }
 
+# Read-only ECR policy
+resource "aws_iam_policy" "osintube_readonly_ecr_policy" {
+  name        = "osintube-readonly-ecr-policy"
+  description = "Read-only access to OSINTube ECR repository"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ecr:GetAuthorizationToken",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
 # Attach policies to read-only role
 resource "aws_iam_role_policy_attachment" "readonly_s3_attachment" {
   role       = aws_iam_role.osintube_readonly_role.name
@@ -103,6 +132,11 @@ resource "aws_iam_role_policy_attachment" "readonly_dynamodb_attachment" {
 resource "aws_iam_role_policy_attachment" "readonly_ssm_attachment" {
   role       = aws_iam_role.osintube_readonly_role.name
   policy_arn = aws_iam_policy.osintube_readonly_ssm_policy.arn
+}
+
+resource "aws_iam_role_policy_attachment" "readonly_ecr_attachment" {
+  role       = aws_iam_role.osintube_readonly_role.name
+  policy_arn = aws_iam_policy.osintube_readonly_ecr_policy.arn
 }
 
 # Create access keys for read-only role (for programmatic access)

@@ -22,4 +22,4 @@ else:
     )
 
 # Execute home functionality
-exec(open("home.py").read())
+exec(open(os.path.join(os.path.dirname(__file__), "home.py")).read())
