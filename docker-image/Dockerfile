@@ -16,7 +16,7 @@ COPY requirements.txt .
 RUN python -m pip install -r requirements.txt
 
 # Copy application code
-COPY app ./app
+COPY ../app ./app
 
 EXPOSE 8501
 
@@ -25,7 +25,7 @@ HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
 # Environment variables to override config
 ENV STREAMLIT_SERVER_ADDRESS=0.0.0.0
 ENV STREAMLIT_SERVER_PORT=8501
-ENV STREAMLIT_SERVER_BASE_URL_PATH=/osintube
-ENV STREAMLIT_BROWSER_SERVER_ADDRESS=app.dataiesb.com
+ENV STREAMLIT_SERVER_BASE_URL_PATH=${BASE_URL_PATH:-}
+ENV STREAMLIT_BROWSER_SERVER_ADDRESS=${BROWSER_SERVER_ADDRESS:-localhost}
 
 CMD ["streamlit", "run", "app/🏠_Home.py"]

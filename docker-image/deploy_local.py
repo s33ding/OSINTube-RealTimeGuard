@@ -31,6 +31,8 @@ def deploy_docker_locally():
         "docker", "run", "-d",
         "--name", "osintube-local", 
         "-p", "8501:8501",
+        "-e", "BASE_URL_PATH=",
+        "-e", "BROWSER_SERVER_ADDRESS=localhost",
         "--rm",
         f"{ecr_url}:latest"
     ], check=True)
