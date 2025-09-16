@@ -12,6 +12,7 @@ from shared_func.s3_objects import *
 from shared_func.llama_agent import analyze_dataset_with_llama
 from shared_func.dynamodb_func import log_search_to_dynamodb
 from shared_func.cognito_func import is_authenticated, get_current_user, logout_user
+from shared_func.main_func import extract_data
 import pyfiglet
 
 # Check authentication - redirect to login if not authenticated
