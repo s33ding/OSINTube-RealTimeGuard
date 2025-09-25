@@ -139,6 +139,11 @@ resource "aws_iam_role_policy_attachment" "readonly_ecr_attachment" {
   policy_arn = aws_iam_policy.osintube_readonly_ecr_policy.arn
 }
 
+resource "aws_iam_role_policy_attachment" "readonly_translate_attachment" {
+  role       = aws_iam_role.osintube_readonly_role.name
+  policy_arn = aws_iam_policy.osintube_translate_policy.arn
+}
+
 # Create access keys for read-only role (for programmatic access)
 resource "aws_iam_user" "osintube_readonly_user" {
   name = "osintube-readonly-user"
