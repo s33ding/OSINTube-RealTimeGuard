@@ -109,7 +109,7 @@ resource "aws_iam_policy" "osintube_bedrock_policy" {
   })
 }
 
-# Policy for Translate access
+# Policy for Translate and Comprehend access
 resource "aws_iam_policy" "osintube_translate_policy" {
   name = "osintube-translate-policy"
 
@@ -120,7 +120,7 @@ resource "aws_iam_policy" "osintube_translate_policy" {
         Effect = "Allow"
         Action = [
           "translate:TranslateText",
-          "translate:DetectDominantLanguage"
+          "comprehend:DetectDominantLanguage"
         ]
         Resource = "*"
       }
