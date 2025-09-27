@@ -35,3 +35,5 @@ phases:
       - echo "Successfully pushed images:"
       - echo "  $REPOSITORY_URI:latest"
       - echo "  $REPOSITORY_URI:$IMAGE_TAG"
+      - echo Restarting deployment to pull new image...
+      - kubectl rollout restart deployment/osintube-app
