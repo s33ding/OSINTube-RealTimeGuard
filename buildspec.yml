@@ -35,5 +35,7 @@ phases:
       - echo "Successfully pushed images:"
       - echo "  $REPOSITORY_URI:latest"
       - echo "  $REPOSITORY_URI:$IMAGE_TAG"
+      - echo Configuring kubectl for sa-east-1...
+      - aws eks update-kubeconfig --region sa-east-1 --name sas-6881323
       - echo Restarting deployment to pull new image...
       - kubectl rollout restart deployment/osintube-app
