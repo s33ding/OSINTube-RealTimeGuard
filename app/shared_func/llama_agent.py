@@ -4,6 +4,10 @@ import pandas as pd
 import re
 from datetime import datetime
 from typing import Dict, List, Tuple, Optional
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+from config import bedrock_model_id
 
 class ThreatAnalysisAgent:
     """Enhanced Threat Analysis Agent with multi-layered detection capabilities"""
@@ -272,7 +276,7 @@ h3 {{ color: #333; margin: 20px 0 10px 0; }}
         """Enhanced Bedrock analysis with better error handling"""
         try:
             response = self.bedrock.invoke_model(
-                modelId="meta.llama4-scout-17b-instruct-v1:0",
+                modelId=bedrock_model_id,
                 body=json.dumps({
                     "prompt": f"<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n{prompt}<|eot_id|><|start_header_id|>assistant<|end_header_id|>",
                     "max_gen_len": 1500,
