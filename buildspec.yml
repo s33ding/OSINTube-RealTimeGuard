@@ -2,21 +2,12 @@ version: 0.2
 
 env:
   variables:
-    EKS_REGION: "us-east-1"
-    CLUSTER_NAME: "osintube-eks"
-    DEPLOYMENT_NAME: "osintube-deployment"
-    CONTAINER_NAME: "osintube"
+    AWS_DEFAULT_REGION: "us-east-1"
 
 phases:
   install:
     runtime-versions:
       python: 3.11
-    commands:
-      - echo Installing kubectl...
-      - curl -LO "https://dl.k8s.io/release/v1.29.0/bin/linux/amd64/kubectl"
-      - chmod +x kubectl
-      - mv kubectl /usr/local/bin/
-      - kubectl version --client
 
   pre_build:
     commands:
@@ -25,8 +16,8 @@ phases:
       - REPOSITORY_URI=$(aws ssm get-parameter --name "/osintube/ecr_repository_uri" --query "Parameter.Value" --output text)
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=${COMMIT_HASH:=latest}
-      - echo Updating kubeconfig for EKS...
-      - aws eks update-kubeconfig --region $EKS_REGION --name $CLUSTER_NAME
+      - echo "Repository URI: $REPOSITORY_URI"
+      - echo "Image tag: $IMAGE_TAG"
 
   build:
     commands:
@@ -41,6 +32,6 @@ phases:
       - echo Pushing the Docker images...
       - docker push $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:$IMAGE_TAG
-      - echo Updating deployment in EKS...
-      - kubectl set image deployment/$DEPLOYMENT_NAME $CONTAINER_NAME=$REPOSITORY_URI:$IMAGE_TAG -n default
-      - kubectl rollout status deployment/$DEPLOYMENT_NAME -n default
+      - echo "Successfully pushed images:"
+      - echo "  $REPOSITORY_URI:latest"
+      - echo "  $REPOSITORY_URI:$IMAGE_TAG"
