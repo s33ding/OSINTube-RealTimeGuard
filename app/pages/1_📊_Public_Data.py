@@ -4,8 +4,7 @@ import pickle
 import pyfiglet
 from shared_func.readonly_client import get_clients
 from shared_func.sentiment_viz import create_sentiment_combined, create_sentiment_counts
-from shared_func.llama_agent import analyze_dataset_with_llama
-from shared_func.cognito_func import is_authenticated
+from shared_func.llama_agent import analyze_dataset_with_llama, ask_dataset_question
 
 st.set_page_config(page_title="Public Data", page_icon="🛡️", layout="wide")
 
@@ -206,6 +205,47 @@ try:
                     st.error(f"❌ Analysis failed: {result['message']}")
         else:
             st.warning("⚠️ Please load a dataset first")
+
+        # Q&A Section
+        if df_data is not None and not df_data.empty:
+            st.markdown("---")
+            st.header("🔍 Ask Questions About This Dataset")
+            
+            # Quick question buttons
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                if st.button("🔥 Most Threatening Users"):
+                    st.session_state.qa_question = "Who are the most threatening users and what did they say?"
+            with col2:
+                if st.button("📊 Sentiment Patterns"):
+                    st.session_state.qa_question = "What are the main sentiment patterns and emotional themes?"
+            with col3:
+                if st.button("🎯 Key Topics"):
+                    st.session_state.qa_question = "What are the main topics and concerns being discussed?"
+            
+            # Custom question input
+            question = st.text_area(
+                "Ask anything about this dataset:",
+                value=st.session_state.get('qa_question', ''),
+                placeholder="e.g., Are there any coordinated attacks? What users show concerning behavior?",
+                height=80
+            )
+            
+            if st.button("🚀 Analyze Question", type="primary"):
+                if question.strip():
+                    with st.spinner("🤖 AI is analyzing your question..."):
+                        try:
+                            result = ask_dataset_question(df_data, question, item.get('video_query', {}).get('S', ''))
+                            
+                            if result['status'] == 'success':
+                                st.success("✅ Analysis Complete!")
+                                st.markdown(result['response'], unsafe_allow_html=True)
+                            else:
+                                st.error(f"❌ Analysis failed: {result.get('error', 'Unknown error')}")
+                        except Exception as e:
+                            st.error(f"❌ Q&A Error: {str(e)}")
+                else:
+                    st.warning("⚠️ Please enter a question")
             
 except Exception as e:
     st.error(f"❌ General error: {e}")

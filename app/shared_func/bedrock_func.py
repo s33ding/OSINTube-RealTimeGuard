@@ -3,8 +3,26 @@ import json
 import config
 import re
 import hashlib
+import time
+from collections import defaultdict
 from datetime import datetime
 from typing import Dict, List, Optional
+
+# Simple rate limiter
+_request_times = defaultdict(list)
+MAX_REQUESTS_PER_MINUTE = 30
+
+def rate_limit_check():
+    now = time.time()
+    minute_ago = now - 60
+    
+    # Clean old requests
+    _request_times['bedrock'] = [t for t in _request_times['bedrock'] if t > minute_ago]
+    
+    if len(_request_times['bedrock']) >= MAX_REQUESTS_PER_MINUTE:
+        raise Exception("Rate limit exceeded. Too many requests.")
+    
+    _request_times['bedrock'].append(now)
 
 def get_bedrock_client():
     return boto3.client('bedrock-runtime', region_name='us-east-1')

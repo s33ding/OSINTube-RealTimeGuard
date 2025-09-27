@@ -87,7 +87,7 @@ resource "aws_iam_policy" "osintube_ssm_policy" {
   })
 }
 
-# Policy for Bedrock access
+# Policy for Bedrock access with DDoS protection
 resource "aws_iam_policy" "osintube_bedrock_policy" {
   name = "osintube-bedrock-policy"
 
@@ -104,6 +104,12 @@ resource "aws_iam_policy" "osintube_bedrock_policy" {
           "arn:aws:bedrock:${var.aws_region}::foundation-model/amazon.nova-lite-v1:0",
           "arn:aws:bedrock:${var.aws_region}::foundation-model/meta.llama3-8b-instruct-v1:0"
         ]
+        Condition = {
+          "aws:RequestedRegion" = [var.aws_region]
+          "IpAddress" = {
+            "aws:SourceIp" = ["0.0.0.0/0"]
+          }
+        }
       }
     ]
   })

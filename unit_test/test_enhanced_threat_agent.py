@@ -218,6 +218,15 @@ class TestEnhancedThreatAgent(unittest.TestCase):
 class TestThreatAnalysisIntegration(unittest.TestCase):
     """Integration tests for threat analysis"""
     
+    def setUp(self):
+        """Set up test fixtures"""
+        self.test_df = pd.DataFrame([{
+            'comment': 'Test threatening comment',
+            'sentiment_score': 0.1,
+            'person': 'user1',
+            'normalized': 'test threatening comment'
+        }])
+    
     def test_empty_dataset(self):
         """Test handling of empty dataset"""
         empty_df = pd.DataFrame()
@@ -244,6 +253,31 @@ class TestThreatAnalysisIntegration(unittest.TestCase):
         
         # Should return the single comment
         self.assertEqual(len(critical_comments), 1)
+
+    @patch('shared_func.llama_agent.boto3.client')
+    def test_qa_functionality(self, mock_boto3):
+        """Test Q&A functionality"""
+        # Mock Bedrock response
+        mock_bedrock = MagicMock()
+        mock_response = {'body': MagicMock()}
+        mock_response['body'].read.return_value = b'{"generation": "<div>Q&A response about threats</div>"}'
+        mock_bedrock.invoke_model.return_value = mock_response
+        mock_boto3.return_value = mock_bedrock
+        
+        # Test Q&A function
+        from shared_func.llama_agent import ask_dataset_question
+        
+        result = ask_dataset_question(
+            self.test_df, 
+            "Who are the most threatening users?", 
+            "Political discussion"
+        )
+        
+        # Should return success
+        self.assertEqual(result['status'], 'success')
+        self.assertIn('question', result)
+        self.assertIn('response', result)
+        self.assertIn('dataset_size', result)
 
 if __name__ == '__main__':
     # Run tests with verbose output
