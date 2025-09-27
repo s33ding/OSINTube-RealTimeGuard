@@ -16,29 +16,8 @@ resource "aws_iam_policy" "osintube_bedrock_rate_limit" {
           "arn:aws:bedrock:${var.aws_region}::foundation-model/meta.llama3-8b-instruct-v1:0"
         ]
         Condition = {
-          "aws:RequestedRegion" = [var.aws_region]
           "StringEquals" = {
-            "bedrock:modelId" = [
-              "amazon.nova-lite-v1:0",
-              "meta.llama3-8b-instruct-v1:0"
-            ]
-          }
-        }
-      },
-      {
-        Sid = "DenyHighCostModels"
-        Effect = "Deny"
-        Action = [
-          "bedrock:InvokeModel",
-          "bedrock:InvokeModelWithResponseStream"
-        ]
-        Resource = "arn:aws:bedrock:*::foundation-model/*"
-        Condition = {
-          "StringNotEquals" = {
-            "bedrock:modelId" = [
-              "amazon.nova-lite-v1:0",
-              "meta.llama3-8b-instruct-v1:0"
-            ]
+            "aws:RequestedRegion" = var.aws_region
           }
         }
       }

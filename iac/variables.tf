@@ -1,3 +1,9 @@
+variable "alert_email" {
+  description = "Email address for budget and security alerts"
+  type        = string
+  default     = "robertomdiniz@protonmail.com"
+}
+
 variable "aws_region" {
   description = "AWS region"
   type        = string

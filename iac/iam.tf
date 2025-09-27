@@ -101,15 +101,13 @@ resource "aws_iam_policy" "osintube_bedrock_policy" {
           "bedrock:InvokeModelWithResponseStream"
         ]
         Resource = [
-          "arn:aws:bedrock:${var.aws_region}::foundation-model/amazon.nova-lite-v1:0",
-          "arn:aws:bedrock:${var.aws_region}::foundation-model/meta.llama3-8b-instruct-v1:0"
+          "arn:aws:bedrock:us-east-1::foundation-model/amazon.nova-lite-v1:0",
+          "arn:aws:bedrock:us-east-1::foundation-model/meta.llama3-8b-instruct-v1:0",
+          "arn:aws:bedrock:us-east-1::foundation-model/meta.llama4-scout-17b-instruct-v1:0",
+          "arn:aws:bedrock:us-east-2::foundation-model/meta.llama4-scout-17b-instruct-v1:0",
+          "arn:aws:bedrock:us-west-2::foundation-model/meta.llama4-scout-17b-instruct-v1:0",
+          "arn:aws:bedrock:us-east-1:*:inference-profile/us.meta.llama4-scout-17b-instruct-v1:0"
         ]
-        Condition = {
-          "aws:RequestedRegion" = [var.aws_region]
-          "IpAddress" = {
-            "aws:SourceIp" = ["0.0.0.0/0"]
-          }
-        }
       }
     ]
   })

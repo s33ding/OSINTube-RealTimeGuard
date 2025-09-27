@@ -172,3 +172,9 @@ resource "aws_ssm_parameter" "readonly_secret_access_key" {
   type  = "SecureString"
   value = aws_iam_access_key.readonly_access_key.secret
 }
+
+# Attach Bedrock policy to readonly role
+resource "aws_iam_role_policy_attachment" "readonly_bedrock_attachment" {
+  role       = aws_iam_role.osintube_readonly_role.name
+  policy_arn = aws_iam_policy.osintube_bedrock_policy.arn
+}

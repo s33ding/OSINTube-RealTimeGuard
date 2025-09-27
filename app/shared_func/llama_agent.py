@@ -10,9 +10,9 @@ class ThreatAnalysisAgent:
     
     def __init__(self, region='us-east-1'):
         self.region = region
-        self.bedrock = boto3.client('bedrock-runtime', region_name=region)
-        self.s3 = boto3.client('s3', region_name=region)
-        self.dynamodb = boto3.client('dynamodb', region_name=region)
+        self.bedrock = boto3.client('bedrock-runtime', region_name='us-east-1')
+        self.s3 = boto3.client('s3', region_name='us-east-1')
+        self.dynamodb = boto3.client('dynamodb', region_name='us-east-1')
         
         # Enhanced threat patterns
         self.threat_patterns = {
@@ -272,7 +272,7 @@ h3 {{ color: #333; margin: 20px 0 10px 0; }}
         """Enhanced Bedrock analysis with better error handling"""
         try:
             response = self.bedrock.invoke_model(
-                modelId="us.meta.llama4-scout-17b-instruct-v1:0",
+                modelId="meta.llama4-scout-17b-instruct-v1:0",
                 body=json.dumps({
                     "prompt": f"<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n{prompt}<|eot_id|><|start_header_id|>assistant<|end_header_id|>",
                     "max_gen_len": 1500,

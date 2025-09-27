@@ -182,27 +182,12 @@ try:
                 if result['status'] == 'success':
                     st.success("✅ Threat analysis completed!")
                     
-                    # Parse and display with proper formatting
+                    # Display HTML analysis with proper rendering
                     analysis = result['analysis']
+                    st.markdown(analysis, unsafe_allow_html=True)
                     
-                    # Split into sections
-                    if "**HIGHLIGHTED ROWS:**" in analysis:
-                        parts = analysis.split("**HIGHLIGHTED ROWS:**")
-                        if len(parts) > 1:
-                            highlighted_section = parts[1].split("**SUMMARY:**")[0] if "**SUMMARY:**" in parts[1] else parts[1]
-                            summary_section = parts[1].split("**SUMMARY:**")[1] if "**SUMMARY:**" in parts[1] else ""
-                            
-                            # Display highlighted rows
-                            st.markdown("### 🚨 HIGHLIGHTED ROWS")
-                            for line in highlighted_section.strip().split('\n'):
-                                if line.strip().startswith('- ROW'):
-                                    st.error(line.strip())
-                            
-                    else:
-                        # Fallback: display as text area
-                        st.text_area("🚨 Threat Analysis Results:", analysis, height=400)
                 else:
-                    st.error(f"❌ Analysis failed: {result['message']}")
+                    st.error(f"❌ Analysis failed: {result.get('message', 'Unknown error')}")
         else:
             st.warning("⚠️ Please load a dataset first")
 
