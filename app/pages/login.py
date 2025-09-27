@@ -57,5 +57,4 @@ st.markdown(f"""
 
 st.markdown("---")
 st.markdown("📧 **Authorized Email**: roberto.diniz@iesb.edu.br")
-st.markdown("🔑 **Temporary Password**: TempPass123!")
 st.warning("⚠️ You will be prompted to change your password on first login.")
