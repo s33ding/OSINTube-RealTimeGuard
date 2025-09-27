@@ -170,6 +170,9 @@ def upload_dataframe_to_s3(dataframe, bucket_name, key_name, path, delete=True):
     Returns:
         str: The S3 object's key (path) where the file was uploaded.
     """
+    # Create directory if it doesn't exist
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    
     _, file_format = os.path.splitext(path)
     file_format = file_format[1:]
 
