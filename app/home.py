@@ -139,11 +139,13 @@ with col3:
 
 # Configuration
 st.markdown("### ⚙️ Configuration")
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns(3)
 with col1:
     comments_maxResult = st.number_input("Max Comments", min_value=10, max_value=200, value=30, step=10)
 with col2:
     search_limit = st.number_input("Max Videos", min_value=1, max_value=20, value=5, step=1)
+with col3:
+    order_by_date = st.checkbox("Order by Date", value=True, help="If unchecked, results will be ordered by relevance")
 
 config.comments_maxResult = comments_maxResult
 config.search_limit = search_limit
@@ -187,7 +189,7 @@ if run_button and input_data:
         status_text.text('🎥 Searching YouTube videos...')
         progress_bar.progress(20)
         
-        df = extract_data(input_data, search_limit, comments_maxResult)
+        df = extract_data(input_data, search_limit, comments_maxResult, order_by_date)
         
         status_text.text('💬 Processing comments...')
         progress_bar.progress(60)

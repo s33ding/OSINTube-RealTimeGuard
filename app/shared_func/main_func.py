@@ -10,8 +10,8 @@ from shared_func.text_func import *
 from shared_func.nlp_func import *
 from shared_func.comprehend_func import sentiment_analysis
 
-def extract_data(search_str, max_videos=1, max_comments=10):
-    search_results = search_youtube(search_str, max_results=max_videos)
+def extract_data(search_str, max_videos=1, max_comments=10, order_by_date=True):
+    search_results = search_youtube(search_str, max_results=max_videos, order_by_date=order_by_date)
     links = [result['link'] for result in search_results]
 
     # Initialize empty DataFrame with required columns
