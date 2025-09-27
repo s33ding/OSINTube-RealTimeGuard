@@ -15,7 +15,7 @@ output "ecr_repository_url" {
 
 output "github_connection_arn" {
   description = "ARN of the GitHub CodeConnections connection"
-  value       = aws_codestarconnections_connection.github.arn
+  value       = data.aws_codestarconnections_connection.s33ding.arn
 }
 
 # output "pod_role_arn" {

@@ -15,10 +15,9 @@ resource "aws_ssm_parameter" "ecr_repository_uri" {
   value = aws_ecr_repository.osintube.repository_url
 }
 
-# CodeConnections Connection
-resource "aws_codestarconnections_connection" "github" {
-  name          = "osintube-github-connection"
-  provider_type = "GitHub"
+# Use existing s33ding GitHub connection
+data "aws_codestarconnections_connection" "s33ding" {
+  name = "s33ding"
 }
 
 # CodeBuild Service Role
@@ -81,7 +80,7 @@ resource "aws_iam_role_policy" "codebuild_policy" {
         Action = [
           "codestar-connections:UseConnection"
         ]
-        Resource = aws_codestarconnections_connection.github.arn
+        Resource = data.aws_codestarconnections_connection.s33ding.arn
       }
     ]
   })
@@ -120,25 +119,30 @@ resource "aws_codebuild_project" "osintube" {
     location        = var.github_repo_url
     git_clone_depth = 1
     buildspec       = "buildspec.yml"
+    
+    auth {
+      type     = "CODECONNECTIONS"
+      resource = data.aws_codestarconnections_connection.s33ding.arn
+    }
   }
 
   source_version = "main"
 }
 
-# CodeBuild Webhook for automatic triggering - commented out due to GitHub API limits
-# resource "aws_codebuild_webhook" "osintube" {
-#   project_name = aws_codebuild_project.osintube.name
-#   build_type   = "BUILD"
+# CodeBuild Webhook for automatic triggering
+resource "aws_codebuild_webhook" "osintube" {
+  project_name = aws_codebuild_project.osintube.name
+  build_type   = "BUILD"
 
-#   filter_group {
-#     filter {
-#       type    = "EVENT"
-#       pattern = "PUSH"
-#     }
+  filter_group {
+    filter {
+      type    = "EVENT"
+      pattern = "PUSH"
+    }
 
-#     filter {
-#       type    = "HEAD_REF"
-#       pattern = "refs/heads/main"
-#     }
-#   }
-# }
+    filter {
+      type    = "HEAD_REF"
+      pattern = "refs/heads/main"
+    }
+  }
+}
