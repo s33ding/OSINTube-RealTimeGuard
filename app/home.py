@@ -145,7 +145,7 @@ with col1:
 with col2:
     search_limit = st.number_input("Max Videos", min_value=1, max_value=20, value=5, step=1)
 with col3:
-    order_by_date = st.checkbox("Order by Date", value=True, help="If unchecked, results will be ordered by relevance")
+    order_by_date = st.checkbox("📅 Order by Date", value=True, help="If unchecked, results will be ordered by relevance")
 
 config.comments_maxResult = comments_maxResult
 config.search_limit = search_limit
