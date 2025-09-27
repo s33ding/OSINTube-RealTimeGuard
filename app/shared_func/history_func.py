@@ -1,9 +1,11 @@
 import boto3
 import pandas as pd
 from datetime import datetime
+from shared_func.boto3_session import create_boto3_session
 
 def get_dynamodb_client():
-    return boto3.client('dynamodb', region_name='us-east-1')
+    session = create_boto3_session()
+    return session.client('dynamodb', region_name='us-east-1')
 
 def get_search_history():
     """Get all search history from DynamoDB"""

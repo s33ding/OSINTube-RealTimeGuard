@@ -8,8 +8,11 @@ from datetime import datetime
 def get_bedrock_client():
     return boto3.client('bedrock-runtime', region_name='us-east-1')
 
+from shared_func.boto3_session import create_boto3_session
+
 def get_dynamodb_client():
-    return boto3.client('dynamodb', region_name='us-east-1')
+    session = create_boto3_session()
+    return session.client('dynamodb', region_name='us-east-1')
 
 def get_s3_client():
     return boto3.client('s3', region_name='us-east-1')

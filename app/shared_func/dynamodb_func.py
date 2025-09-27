@@ -3,9 +3,11 @@ from datetime import datetime
 import pytz
 import re
 import hashlib
+from shared_func.boto3_session import create_boto3_session
 
 def get_dynamodb_client():
-    return boto3.client('dynamodb', region_name='us-east-1')
+    session = create_boto3_session()
+    return session.client('dynamodb', region_name='us-east-1')
 
 def normalize_title(title):
     """Normalize title for consistent PK generation"""
