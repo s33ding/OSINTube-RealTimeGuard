@@ -16,8 +16,8 @@ phases:
       - REPOSITORY_URI=$(aws ssm get-parameter --name "/osintube/ecr_repository_uri" --query "Parameter.Value" --output text)
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=${COMMIT_HASH:=latest}
-      - echo "Repository URI: $REPOSITORY_URI"
-      - echo "Image tag: $IMAGE_TAG"
+      - echo "Repository URI:" $REPOSITORY_URI
+      - echo "Image tag:" $IMAGE_TAG
 
   build:
     commands:
