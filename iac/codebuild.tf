@@ -78,6 +78,14 @@ resource "aws_iam_role_policy" "codebuild_policy" {
       {
         Effect = "Allow"
         Action = [
+          "eks:DescribeCluster",
+          "eks:ListClusters"
+        ]
+        Resource = "arn:aws:eks:sa-east-1:*:cluster/*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
           "codestar-connections:UseConnection"
         ]
         Resource = data.aws_codestarconnections_connection.s33ding.arn
